@@ -1,0 +1,26 @@
+{
+  "Status": "PASS",
+  "RecordCount": 67475,
+  "ExpectedLabelCount": 67475,
+  "FailureCount": 0,
+  "Failures": [],
+  "Statistics": {
+    "GradedOrder:1": 5,
+    "GradedOrder:12": 2185,
+    "GradedOrder:16": 26772,
+    "GradedOrder:2": 242,
+    "GradedOrder:24": 2666,
+    "GradedOrder:3": 33,
+    "GradedOrder:32": 6322,
+    "GradedOrder:4": 4692,
+    "GradedOrder:48": 1379,
+    "GradedOrder:6": 568,
+    "GradedOrder:8": 22248,
+    "GradedOrder:96": 363,
+    "Nonsymmorphic": 18801,
+    "Symmorphic": 48674,
+    "collinear": 1421,
+    "coplanar": 9542,
+    "noncoplanar": 56512
+  }
+}

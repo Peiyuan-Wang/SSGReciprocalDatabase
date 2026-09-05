@@ -1,0 +1,10 @@
+{
+  "SchemaVersion": 1,
+  "Status": "PASS",
+  "XiaoRecordsChecked": 67475,
+  "XiaoAlternativesChecked": 211487,
+  "PIRRecordsChecked": 5729,
+  "PIROperatorsChecked": 76581,
+  "WorstOrthogonalityError": 3.3306690738754696e-16,
+  "Errors": []
+}

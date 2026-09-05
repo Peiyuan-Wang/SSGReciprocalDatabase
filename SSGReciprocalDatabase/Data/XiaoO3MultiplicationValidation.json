@@ -1,0 +1,8 @@
+{
+  "SchemaVersion": 1,
+  "Status": "PASS",
+  "PIRRecordsChecked": 5729,
+  "ProductsChecked": 1448351,
+  "WorstMultiplicationError": 2.55351295663786e-15,
+  "Errors": []
+}
