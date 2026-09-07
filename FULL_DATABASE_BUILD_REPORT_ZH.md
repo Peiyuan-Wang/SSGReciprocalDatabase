@@ -1,4 +1,4 @@
-# SSGReciprocalDatabase 0.6.0 全量构建报告
+# SSGReciprocalDatabase 0.6.2 全量构建报告
 
 ## 结果
 
@@ -11,7 +11,7 @@
 - 每个生成元的实空间整数矩阵 `SpatialPointMatrix`，即 `M_g`；
 - 幺正/反幺正 grading `Grading`，即 `s_g`；
 - 动量线性作用 `MomentumLinearPart=LinearPart=s_g M_g^(-T)`；
-- 分数倒格平移 `FractionalTranslation=Q_g`；
+- 共同动量原点规范下的分数倒格平移代表元 `FractionalTranslation=Q_g`；
 - 倒空间 Seitz 对 `(A_g,Q_g)`；
 - 保留 grading 的完整群闭包；
 - 忘掉 grading 后的动量作用群；

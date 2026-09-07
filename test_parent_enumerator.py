@@ -197,6 +197,25 @@ class ParentSpaceGroupEnumeratorTests(unittest.TestCase):
         product = commutator.T * center
         self.assertTrue(all(int(value) % 2 == 0 for value in product))
 
+    def test_n143_noncommuting_raw_shift_is_one_coboundary(self) -> None:
+        result = analyze_ssg_iso_ir("N143.16.1")
+        self.assertEqual(result["translation_projectivity"], "noncommuting")
+        self.assertEqual(
+            result["physical_bloch_basis_parent_coordinates"],
+            [[2, 0, 0], [0, 2, 0], [0, 0, 1]],
+        )
+        generator = result["generator_derivation"][0]
+        self.assertEqual(generator["kappa"], [1, 0, 0])
+        self.assertEqual(generator["Q"], ["1/2", 0, 0])
+        self.assertTrue(result["origin_test"]["solvable"])
+        self.assertFalse(result["origin_test"]["intrinsic_momentum_nonsymmorphic"])
+
+        action = sp.Matrix(result["input_generators"][0]["A"])
+        theta = sp.Matrix([sp.Rational(1, 2), sp.Rational(1, 2), 0])
+        raw_q = sp.Matrix([sp.Rational(1, 2), 0, 0])
+        residual = raw_q - (sp.eye(3) - action) * theta
+        self.assertTrue(all(sp.frac(value) == 0 for value in residual))
+
     def test_iso_ir_backed_n6_witness_has_complete_reciprocal_group(self) -> None:
         result = analyze_ssg_iso_ir("N6.9.19")
         self.assertEqual(result["status"], "COMPLETE")

@@ -1,4 +1,4 @@
-# SSGReciprocalDatabase 0.6.0 User Guide
+# SSGReciprocalDatabase 0.6.2 User Guide
 
 ## 1. Overview
 
@@ -149,10 +149,16 @@ Each generator contains:
 - `Name`: crystallographic rotation name used in the displayed table;
 - `InternalName`: stable database identifier;
 - `RealSpaceSeitz`: `{M_g,t_g}` in parent primitive coordinates;
-- `ReciprocalSpaceSeitz`: `{A_g,Q_g}` in the `L_B` reciprocal basis;
-- `HasFractionalShift`: whether the stored representative has `Q_g != 0`;
+- `ReciprocalSpaceSeitz`: the displayed `{A_g,Q_g}` representative in the `L_B` reciprocal basis;
+- `RawReciprocalSpaceSeitz`: the representative obtained directly from the spin lift;
+- `HasFractionalShift`: whether the displayed representative has `Q_g != 0`;
 - `Antiunitary` and `Grading`;
-- `Eta`: the common-spin-axis sign, or `Missing["NotApplicable",...]`.
+- `Eta`: the scalar common-spin-axis sign, or `Missing["NotApplicable",...]`.
+
+At the record level, `TranslationImageBranch` distinguishes `trivial`,
+`common-axis`, and `V4/Q8`. `CommonSpinAxis` is a three-component spin-space
+vector only in the common-axis branch. By contrast, each `eta_g` is a scalar
+defined by `R_g n = eta_g n` and takes the value `+1` or `-1`.
 
 ### `showSSGReciprocalGenTab[ssg]`
 
@@ -163,13 +169,25 @@ showSSGReciprocalGenTab["N143.10.1"]
 ```
 
 The table rows are `Real {M|t}`, `Recip. {A|Q}`, `Nonzero Q`, `Antiunitary`,
-and `eta_g`. A dash is displayed when `eta_g` is not defined. The text above
+and `eta_g (+/-1)`. A dash is displayed when no unique common spin axis is
+selected by translations. The text above
 the table reports `L_B`, its reciprocal basis, the relative BZ volume, and the
 global momentum-space nonsymmorphic result.
 
-`Nonzero Q` is a statement about the stored momentum-origin convention. The
-global nonsymmorphic result is stronger: it tests whether one common origin
-shift can remove all `Q_g` simultaneously.
+For a symmorphic class the table uses the common-origin representative with
+all `Q_g=0`. The raw spin-lift representative is retained in
+`RawReciprocalSpaceSeitz`. A nonzero raw `Q_g` is not by itself intrinsic:
+only the class after allowing one common momentum-origin shift determines
+momentum-space nonsymmorphicity.
+
+In the `V4/Q8` branch, `L_B` is the center (the radical of the translation
+commutator), not the kernel of the lifted translation representation. Its
+basis translations can therefore lift to `-I` as well as `+I`. Point-group
+conjugation can produce a nonzero raw `Q_g` by changing this central sign
+character. The resulting shift is always one common-origin coboundary, so the
+displayed representative has `Q_g=0` for every generator. Consequently a raw
+fraction in `RawReciprocalSpaceSeitz` must not be interpreted as intrinsic
+momentum-space nonsymmorphicity.
 
 ### `SSGReciprocalSymmetryTable[ssg]`
 
@@ -179,15 +197,16 @@ Compatibility alias for `showSSGReciprocalGenTab[ssg]`.
 
 ### `SSGReciprocalGenElem[ssg]`
 
-Returns the reciprocal generators used in the affine group calculation. The
-three ordinary lattice translations are not repeated here when they act
-trivially on momentum; use `getSSGReciprocalGenTab` for the complete displayed
-generator set.
+Returns reciprocal generators in the displayed common-origin representative.
+For a symmorphic class all returned `Q_g` are zero. The three ordinary lattice
+translations are not repeated here when they act trivially on momentum; use
+`getSSGReciprocalGenTab` for the complete displayed generator set. Raw lift
+data remain available through `getSSGReciprocalData`.
 
 ### `SSGReciprocalGroupElements[ssg]`
 
 Returns the closed momentum-action group as Seitz pairs `(A_g,Q_g)`, with the
-unitary grading forgotten.
+unitary grading forgotten, in the same displayed common-origin representative.
 
 ### `SSGGradedReciprocalGroupElements[ssg]`
 

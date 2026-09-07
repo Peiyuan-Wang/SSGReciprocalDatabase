@@ -1,7 +1,7 @@
 Get[FileNameJoin[{DirectoryName[$InputFileName], "SSGReciprocalDatabase", "Kernel", "SSGReciprocalDatabase.wl"}]];
 
 status = SSGReciprocalDatabaseStatus[];
-If[SSGReciprocalDatabaseVersion =!= {0, 6, 0}, Exit[1]];
+If[SSGReciprocalDatabaseVersion =!= {0, 6, 2}, Exit[1]];
 If[Lookup[status, "RecordCount"] =!= 67475, Exit[1]];
 If[Lookup[status, "CompleteCount"] =!= 67475, Exit[2]];
 If[Lookup[status, "ComputedParentSpaceGroups"] =!= 230, Exit[3]];
@@ -33,6 +33,21 @@ n143Generators = Lookup[n143TableData, "Generators"];
 If[Lookup[n143Generators, "Name"] =!= {"T1", "T2", "T3", "C3+"}, Exit[16]];
 If[!TrueQ[Lookup[n143Generators[[3]], "Antiunitary"]], Exit[17]];
 If[Head[showSSGReciprocalGenTab["N143.10.1"]] =!= Column, Exit[18]];
+n143Trivial = getSSGReciprocalGenTab["N143.10.1"];
+If[n143Trivial["TranslationImageBranch"] =!= "trivial", Exit[19]];
+If[!AllTrue[Values[n143Trivial["EtaByGenerator"]], MissingQ], Exit[20]];
+n143Axis = getSSGReciprocalGenTab["N143.11.1"];
+If[n143Axis["TranslationImageBranch"] =!= "common-axis" ||
+    n143Axis["CommonSpinAxis"] =!= {1, 0, 0}, Exit[21]];
+n143Noncommuting = getSSGReciprocalGenTab["N143.16.1"];
+If[n143Noncommuting["TranslationImageBranch"] =!= "V4/Q8", Exit[22]];
+If[!AllTrue[Lookup[n143Noncommuting["Generators"], "HasFractionalShift"], Not], Exit[23]];
+If[Lookup[Last[n143Noncommuting["Generators"]], "RawReciprocalSpaceSeitz"][[2]] =!=
+    {1/2, 0, 0}, Exit[24]];
+If[AnyTrue[Lookup[SSGReciprocalGenElem["N143.16.1"], "FractionalTranslation"],
+    # =!= {0, 0, 0} &], Exit[25]];
+If[AnyTrue[Lookup[SSGReciprocalGroupElements["N143.16.1"], "FractionalTranslation"],
+    # =!= {0, 0, 0} &], Exit[26]];
 Print[<|"RecordCount" -> Lookup[status, "RecordCount"],
   "CompleteCount" -> Lookup[status, "CompleteCount"],
   "ParentSpaceGroups" -> Lookup[status, "ComputedParentSpaceGroups"],

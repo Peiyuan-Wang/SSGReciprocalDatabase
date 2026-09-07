@@ -10,7 +10,7 @@ ClearAll @@ Names["SSGReciprocalDatabase`Private`*"];
 
 SSGReciprocalDatabaseVersion::usage =
   "SSGReciprocalDatabaseVersion gives the installed package version as {major, minor, patch}.";
-SSGReciprocalDatabaseVersion = {0, 6, 0};
+SSGReciprocalDatabaseVersion = {0, 6, 2};
 
 getSSGReciprocalData::usage =
   "getSSGReciprocalData[\"N6.9.19\"] returns all available reciprocal-space data for a Xiao SSG number.";
@@ -134,24 +134,46 @@ getSSGLB[ssg_] := Module[{record = lookupRecord[ssg], value},
   If[value === None || value === Null, missingField[record, "LB"], value]
 ];
 
+zeroShiftRepresentative[element_Association] := Module[{linear},
+  linear = Lookup[element, "LinearPart", IdentityMatrix[3]];
+  Join[element, <|
+    "FractionalTranslation" -> {0, 0, 0},
+    "Seitz" -> {linear, {0, 0, 0}},
+    "HasFractionalShift" -> False
+  |>]
+];
+
+displayedReciprocalRepresentative[record_Association, value_List] :=
+  If[TrueQ[Lookup[record, "Nonsymmorphic", False]],
+    value,
+    zeroShiftRepresentative /@ value
+  ];
+
 SSGReciprocalGenElem[ssg_] := Module[{record = lookupRecord[ssg], value},
   If[MissingQ[record], Return[record]];
   value = Lookup[record, "ReciprocalGenerators", None];
-  If[value === None || value === Null, missingField[record, "ReciprocalGenerators"], value]
+  If[value === None || value === Null,
+    missingField[record, "ReciprocalGenerators"],
+    displayedReciprocalRepresentative[record, value]
+  ]
 ];
 
 SSGReciprocalGroupElements[ssg_] := Module[{record = lookupRecord[ssg], value},
   If[MissingQ[record], Return[record]];
   value = Lookup[record, "ReciprocalMomentumGroupElements", None];
   If[value === None || value === Null,
-    missingField[record, "ReciprocalMomentumGroupElements"], value]
+    missingField[record, "ReciprocalMomentumGroupElements"],
+    displayedReciprocalRepresentative[record, value]
+  ]
 ];
 
 SSGGradedReciprocalGroupElements[ssg_] := Module[{record = lookupRecord[ssg], value},
   If[MissingQ[record], Return[record]];
   value = Lookup[record, "GradedReciprocalGroupElements", None];
   If[value === None || value === Null,
-    missingField[record, "GradedReciprocalGroupElements"], value]
+    missingField[record, "GradedReciprocalGroupElements"],
+    displayedReciprocalRepresentative[record, value]
+  ]
 ];
 
 SSGReciprocalDatabaseStatus[] := Module[{status, files},
@@ -446,17 +468,70 @@ rotationNameFromMatrix[parent_Integer, matrix_List] := Module[
 
 notApplicableEta[] := Missing["NotApplicable", "NoUniqueCommonSpinAxis"];
 
+canonicalAxisVector[vector_List] := Module[{position, scale},
+  position = SelectFirst[Range[Length[vector]],
+    !TrueQ[PossibleZeroQ[Simplify[vector[[#]]]]] &, Missing[]];
+  If[MissingQ[position], Return[Missing["NoAxis"]]];
+  scale = vector[[position]];
+  Simplify[vector/scale]
+];
+
+translationImageClassification[ssg_String, lb_List, projectivity_] := Module[
+  {parentTranslations, blochTranslations, nontrivial, stacked, nullspace, axis},
+  If[projectivity === "noncommuting",
+    Return[<|"Branch" -> "V4/Q8", "CommonSpinAxis" -> notApplicableEta[]|>]
+  ];
+  parentTranslations = Quiet[Check[
+    Take[SSGO3EmbeddedRepresentationMatrices[ssg], 3], $Failed
+  ]];
+  If[parentTranslations === $Failed || !ListQ[parentTranslations],
+    Return[<|"Branch" -> "commuting-unresolved",
+      "CommonSpinAxis" -> Missing["Unavailable"]|>]
+  ];
+  blochTranslations = Table[
+    Fold[Dot, IdentityMatrix[3],
+      MapThread[MatrixPower, {parentTranslations, lb[[All, column]]}]],
+    {column, 3}
+  ];
+  nontrivial = Select[blochTranslations,
+    !TrueQ[Simplify[# == IdentityMatrix[3]]] &];
+  If[nontrivial === {},
+    Return[<|"Branch" -> "trivial", "CommonSpinAxis" -> notApplicableEta[]|>]
+  ];
+  stacked = Join @@ (Simplify[# - IdentityMatrix[3]] & /@ nontrivial);
+  nullspace = Quiet[NullSpace[stacked]];
+  If[Length[nullspace] =!= 1,
+    Return[<|"Branch" -> "commuting-unresolved",
+      "CommonSpinAxis" -> Missing["Unavailable"]|>]
+  ];
+  axis = canonicalAxisVector[First[nullspace]];
+  <|"Branch" -> "common-axis", "CommonSpinAxis" -> axis|>
+];
+
+displayGaugeRepresentative[generator_Association, intrinsicQ_] := Module[
+  {rawSeitz, displayedSeitz},
+  rawSeitz = Lookup[generator, "ReciprocalSpaceSeitz"];
+  displayedSeitz = If[TrueQ[intrinsicQ], rawSeitz, {rawSeitz[[1]], {0, 0, 0}}];
+  Join[generator, <|
+    "RawReciprocalSpaceSeitz" -> rawSeitz,
+    "RawHasFractionalShift" -> TrueQ[Lookup[generator, "HasFractionalShift", False]],
+    "ReciprocalSpaceSeitz" -> displayedSeitz,
+    "HasFractionalShift" -> AnyTrue[Flatten[displayedSeitz[[2]]], # =!= 0 &]
+  |>]
+];
+
 getSSGReciprocalGenTab[ssg_String] := Module[
   {record, reciprocalGenerators, reciprocalByName, derivations, derivationByName,
    pointAndSpinNames, pointAndSpinGenerators, translations, generators, lb,
    reciprocalBasis, latticeIndex, axisDefined, parent, makeTranslation,
-   makePointOrSpin},
+   makePointOrSpin, intrinsic, etaByGenerator, projectivity, imageClass},
   record = lookupRecord[ssg];
   If[MissingQ[record], Return[record]];
   If[Lookup[record, "Status", None] =!= "COMPLETE",
     Return[missingField[record, "ReciprocalGeneratorTable"]]
   ];
   parent = Lookup[record, "ParentSpaceGroup"];
+  loadRotationNameData[];
   reciprocalGenerators = Lookup[record, "ReciprocalGenerators", {}];
   reciprocalByName = Association[
     (Lookup[#, "Name", ""] -> #) & /@ reciprocalGenerators
@@ -465,11 +540,13 @@ getSSGReciprocalGenTab[ssg_String] := Module[
   derivationByName = Association[
     (Lookup[#, "name", ""] -> #) & /@ derivations
   ];
-  axisDefined = Lookup[record, "MagneticOrder", ""] === "coplanar" ||
-    AnyTrue[Lookup[derivations, "eta_g", None], MemberQ[{-1, 1}, #] &];
   lb = exactDisplayValue[Lookup[record, "LB"]];
   reciprocalBasis = Transpose[Inverse[lb]];
   latticeIndex = Abs[Det[lb]];
+  intrinsic = TrueQ[Lookup[record, "Nonsymmorphic", False]];
+  projectivity = Lookup[record, "TranslationProjectivity"];
+  imageClass = translationImageClassification[ssg, lb, projectivity];
+  axisDefined = imageClass["Branch"] === "common-axis";
 
   makeTranslation[index_Integer] := Module[
     {internalName, reciprocal, detail, antiunitary, grading, linear, shift, eta},
@@ -480,8 +557,8 @@ getSSGReciprocalGenTab[ssg_String] := Module[
     grading = If[antiunitary, -1, 1];
     linear = Lookup[reciprocal, "LinearPart", grading IdentityMatrix[3]];
     shift = Lookup[reciprocal, "FractionalTranslation", {0, 0, 0}];
-    eta = Lookup[detail, "eta_g", None];
-    If[!MemberQ[{-1, 1}, eta], eta = If[axisDefined, 1, notApplicableEta[]]];
+    eta = If[axisDefined, Lookup[detail, "eta_g", 1], notApplicableEta[]];
+    If[axisDefined && !MemberQ[{-1, 1}, eta], eta = 1];
     <|
       "Name" -> internalName,
       "InternalName" -> internalName,
@@ -507,9 +584,9 @@ getSSGReciprocalGenTab[ssg_String] := Module[
       StringStartsQ[internalName, "g"], rotationNameFromMatrix[parent, matrix],
       True, internalName
     ];
-    eta = Lookup[detail, "eta_g", None];
-    If[eta === None && internalName === "zeta_coplanar", eta = 1];
-    If[!MemberQ[{-1, 1}, eta], eta = notApplicableEta[]];
+    eta = If[axisDefined, Lookup[detail, "eta_g", None], notApplicableEta[]];
+    If[axisDefined && eta === None && internalName === "zeta_coplanar", eta = 1];
+    If[axisDefined && !MemberQ[{-1, 1}, eta], eta = Missing["Unavailable"]];
     <|
       "Name" -> name,
       "InternalName" -> internalName,
@@ -526,7 +603,11 @@ getSSGReciprocalGenTab[ssg_String] := Module[
   pointAndSpinNames = Select[Lookup[reciprocalGenerators, "Name", {}],
     StringStartsQ[#, "g"] || # === "zeta_coplanar" &];
   pointAndSpinGenerators = makePointOrSpin /@ pointAndSpinNames;
-  generators = Join[translations, pointAndSpinGenerators];
+  generators = displayGaugeRepresentative[#, intrinsic] & /@
+    Join[translations, pointAndSpinGenerators];
+  etaByGenerator = AssociationThread[
+    Lookup[generators, "Name"], Lookup[generators, "Eta"]
+  ];
   <|
     "SSGNumber" -> ssg,
     "ParentSpaceGroup" -> parent,
@@ -535,7 +616,16 @@ getSSGReciprocalGenTab[ssg_String] := Module[
     "LB" -> lb,
     "ReciprocalBasisMatrix" -> reciprocalBasis,
     "BZVolumeRatioToParent" -> 1/latticeIndex,
-    "Nonsymmorphic" -> TrueQ[Lookup[record, "Nonsymmorphic", False]],
+    "TranslationProjectivity" -> projectivity,
+    "TranslationImageBranch" -> imageClass["Branch"],
+    "CommonSpinAxis" -> imageClass["CommonSpinAxis"],
+    "Nonsymmorphic" -> intrinsic,
+    "DisplayedQRepresentative" -> If[intrinsic,
+      "Stored representative of the nontrivial class",
+      "Common-origin gauge with Q_g=0"
+    ],
+    "EtaDefinition" -> "eta_g is the scalar sign defined by R_g n = eta_g n when translations select a unique common spin axis n.",
+    "EtaByGenerator" -> etaByGenerator,
     "Generators" -> generators
   |>
 ];
@@ -563,7 +653,7 @@ showSSGReciprocalGenTab[ssg_String] := Module[
         Style["Nonzero Q", Bold]],
       Prepend[If[TrueQ[#], "Yes", "No"] & /@ Lookup[generators, "Antiunitary"],
         Style["Antiunitary", Bold]],
-      Prepend[etaTableValue /@ Lookup[generators, "Eta"], Style["eta_g", Bold]]
+      Prepend[etaTableValue /@ Lookup[generators, "Eta"], Style["eta_g (+/-1)", Bold]]
     },
     Frame -> All, Alignment -> Center, ItemSize -> Full,
     Dividers -> {
@@ -585,10 +675,14 @@ showSSGReciprocalGenTab[ssg_String] := Module[
     Row[{"BZ coordinate cell: parallelepiped spanned by the columns of ",
       Superscript[Subscript[Style["L", Italic], "B"], "-T"],
       "; volume ratio to the parent BZ = ", data["BZVolumeRatioToParent"], "."}],
+    Row[{"Translation image: ", data["TranslationImageBranch"],
+      "; common spin axis n = ", etaTableValue[data["CommonSpinAxis"]], "."}],
+    Row[{"Translation lifts: ", data["TranslationProjectivity"],
+      "; displayed Q: ", data["DisplayedQRepresentative"], "."}],
     Row[{"Momentum-space nonsymmorphic: ", Style[globalLabel, Bold]}],
     Pane[table, ImageSize -> Full, Scrollbars -> {True, False}],
     Style[
-      "Real-space Seitz data use the parent primitive-lattice coordinates. Reciprocal Seitz data use the BZ basis defined by L_B. 'Nonzero Q' refers to the stored momentum-origin convention; intrinsic nonsymmorphicity is the global common-origin result shown above. eta_g is defined only when the translation image selects a unique common spin axis.",
+      "Real-space Seitz data use the parent primitive-lattice coordinates. Reciprocal Seitz data use the BZ basis defined by L_B. For a symmorphic class the displayed common-origin representative has Q_g=0; the raw lift representative remains available as RawReciprocalSpaceSeitz. eta_g is a scalar sign, defined only when the translation image selects a unique common spin axis n.",
       Smaller, GrayLevel[0.3]
     ]
   }, Spacings -> 1.0]

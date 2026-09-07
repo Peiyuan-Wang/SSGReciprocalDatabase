@@ -1,0 +1,19 @@
+.DS_Store
+__pycache__/
+*.pyc
+
+# Built release archives are uploaded as GitHub Release assets.
+dist/
+
+# Large generated databases and intermediate catalogs.
+_vendor/
+database_parent_records/
+database_parent_records_iso_ir/
+full_database/
+SSGReciprocalDatabase/Data/O3/
+SSGReciprocalDatabase/Data/Reciprocal/
+SSGReciprocalDatabase/Data/XiaoO3RepresentationSource.json
+all_o3_catalog_status.json
+all_o3_classes_blocked.json
+all_ssg_catalog_status.json
+all_ssg_classes_blocked.json

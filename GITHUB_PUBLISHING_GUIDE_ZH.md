@@ -5,13 +5,13 @@
 完整程序包位于：
 
 ```text
-dist/SSGReciprocalDatabase-0.6.0.paclet
+dist/SSGReciprocalDatabase-0.6.2.paclet
 ```
 
 它约为 15 MB，SHA-256 为：
 
 ```text
-3ca94d3a509279656ab68b629c5b20621f56841af03e976f8352ce80010de042
+ff9c869a080cb6f7014e9b4d3ef538cb6b224d86e6822bf4265e7b8cf1a64595
 ```
 
 建议先发布为 private repository。公开前应确认 ISO-IR 数据、Xiao 标签数据和
@@ -48,7 +48,7 @@ git add SSGReciprocalDatabase/Data/XiaoO3RepresentationValidation.json
 git add SSGReciprocalDatabase/Data/XiaoO3MultiplicationValidation.json
 git add SSGReciprocalDatabase/Data/SpaceGroupIrepRotationNames.json
 git add test_*.py test_*.wl validate_rotation_names.py
-git commit -m "Release SSGReciprocalDatabase 0.6.0"
+git commit -m "Release SSGReciprocalDatabase 0.6.2"
 ```
 
 ## 3. 新建远程仓库并推送
@@ -65,17 +65,17 @@ gh repo create YOUR_GITHUB_NAME/SSGReciprocalDatabase --private --source=. --rem
 ## 4. 发布完整程序包
 
 ```bash
-gh release create v0.6.0 dist/SSGReciprocalDatabase-0.6.0.paclet --title "SSGReciprocalDatabase 0.6.0" --notes "Complete Wolfram Language database for 67,475 Xiao SSG labels."
+gh release create v0.6.2 dist/SSGReciprocalDatabase-0.6.2.paclet --title "SSGReciprocalDatabase 0.6.2" --notes "Complete Wolfram Language database for 67,475 Xiao SSG labels."
 ```
 
-GitHub CLI 会从当前默认分支创建 `v0.6.0` tag，并把 paclet 上传为 Release asset。
+GitHub CLI 会从当前默认分支创建 `v0.6.2` tag，并把 paclet 上传为 Release asset。
 
 ## 5. 用户安装方法
 
 用户下载 `.paclet` 后，可在 Mathematica 中运行：
 
 ```wl
-PacletInstall["/absolute/path/SSGReciprocalDatabase-0.6.0.paclet"]
+PacletInstall["/absolute/path/SSGReciprocalDatabase-0.6.2.paclet"]
 << "SSGReciprocalDatabase`"
 showSSGReciprocalGenTab["N143.10.1"]
 ```
@@ -84,7 +84,7 @@ showSSGReciprocalGenTab["N143.10.1"]
 
 ```bash
 gh repo view --web
-gh release view v0.6.0
+gh release view v0.6.2
 ```
 
 在一个全新的 Mathematica Kernel 中再运行：
@@ -96,4 +96,4 @@ Length[SSGReciprocalDatabaseLabels[]]
 showSSGReciprocalGenTab["N143.10.1"]
 ```
 
-预期版本为 `{0,6,0}`，标签数为 `67475`。
+预期版本为 `{0,6,2}`，标签数为 `67475`。

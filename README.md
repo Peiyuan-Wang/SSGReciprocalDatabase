@@ -256,6 +256,15 @@ integer matrix `SpatialPointMatrix=M_g`, grading `Grading=s_g`, momentum matrix
 `SSGReciprocalGroupElements` forgets the grading after forming the momentum
 action, while `SSGGradedReciprocalGroupElements` retains it.
 
+The complete record returned by `getSSGReciprocalData` retains the raw
+representative obtained from the spin lift. The generator, group-element, and
+formatted-table functions return a common-origin representative: if the Smith
+test gives `[Q]=0`, every returned `Q_g` is zero. In the formatted generator
+table, the original lift value remains available as `RawReciprocalSpaceSeitz`.
+The table also separates the trivial, common-axis, and `V4/Q8`
+translation-image branches. `CommonSpinAxis` is a three-component spin-space
+vector, whereas each `Eta` entry is the scalar sign `eta_g=+/-1`.
+
 The complete English reference is provided in
 `SSGReciprocalDatabase_UserGuide_EN.md` and
 `SSGReciprocalDatabase_UserGuide_EN.docx`.

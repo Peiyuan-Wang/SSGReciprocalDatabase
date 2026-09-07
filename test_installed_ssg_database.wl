@@ -6,7 +6,7 @@ sampleLabels = {"L1.1.1", "N6.9.19", "N123.1.1", "L225.1.1", "N230.1.1"};
 sampleRecords = getSSGReciprocalData /@ sampleLabels;
 
 If[Lookup[status, "SchemaVersion"] =!= 2, Exit[1]];
-If[SSGReciprocalDatabaseVersion =!= {0, 6, 0}, Exit[1]];
+If[SSGReciprocalDatabaseVersion =!= {0, 6, 2}, Exit[1]];
 If[Lookup[status, "RecordCount"] =!= 67475, Exit[2]];
 If[Lookup[status, "CompleteCount"] =!= 67475, Exit[3]];
 If[Length[labels] =!= 67475, Exit[4]];
@@ -21,9 +21,15 @@ If[Lookup[n143Generators, "Name"] =!= {"T1", "T2", "T3", "C3+"}, Exit[9]];
 If[Head[showSSGReciprocalGenTab["N143.10.1"]] =!= Column, Exit[10]];
 
 Get["SSGReciprocalDatabase`"];
-If[SSGReciprocalDatabaseVersion =!= {0, 6, 0}, Exit[11]];
+If[SSGReciprocalDatabaseVersion =!= {0, 6, 2}, Exit[11]];
 If[Lookup[getSSGReciprocalGenTab["N143.10.1"]["Generators"], "Name"] =!=
     {"T1", "T2", "T3", "C3+"}, Exit[12]];
+n143Noncommuting = getSSGReciprocalGenTab["N143.16.1"];
+If[n143Noncommuting["Nonsymmorphic"] =!= False ||
+    AnyTrue[Lookup[n143Noncommuting["Generators"], "HasFractionalShift"], TrueQ],
+  Exit[13]];
+If[AnyTrue[Lookup[SSGReciprocalGenElem["N143.16.1"], "FractionalTranslation"],
+    # =!= {0, 0, 0} &], Exit[14]];
 
 Print[<|
   "LoadedFrom" -> FindFile["SSGReciprocalDatabase`"],
