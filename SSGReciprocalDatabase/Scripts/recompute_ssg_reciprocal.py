@@ -11,6 +11,7 @@ import sympy as sp
 
 from build_ssg_database import complete_record
 from enumerate_parent_sg import DEFAULT_ISO_IR_SOURCE, DEFAULT_XIAO, analyze_ssg_iso_ir
+from xiao_appendix_f import appendix_f_labels
 
 
 HERE = Path(__file__).resolve().parent
@@ -55,11 +56,13 @@ def main() -> None:
         output = result
     else:
         source_record = json.loads(args.source.read_text(encoding="utf-8"))["XiaoRecords"][args.ssg]
+        table_labels = appendix_f_labels(args.ssg, source_record["AppendixFDisplay"])
         inventory = {
             "id": args.ssg,
             "parent_sg": source_record["ParentSpaceGroup"],
             "magnetic_order": source_record["MagneticOrder"],
-            "xiao_table_nonsymmorphic": result.get("xiao_table_nonsymmorphic", False),
+            "classification_row_raw": source_record["AppendixFDisplay"],
+            "xiao_table_nonsymmorphic": table_labels["nonsymmorphic"],
         }
         output = complete_record(result, inventory)
         output["DataSource"] = "Official ISO-IR PIR matrices and Xiao O(3) class archive"

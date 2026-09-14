@@ -27,27 +27,32 @@ O(3) 数据源保留全部 alternatives；预计算倒空间数据库固定采�
 
 ## 验证结果
 
-- Python 单元测试：26/26 通过。
+- Python 单元测试：37/37 通过。
 - Mathematica 源码接口测试：通过。
 - Mathematica 安装后全新 Kernel 测试：通过。
 - 全库逐条验证：`PASS`，67,475 条，失败 0。
 - Xiao nonsymmorphic 标记冲突：0。
+- Xiao `Commute` 列适用记录：66,054 条。
+- Xiao commuting：61,742 条；程序交换子计算：61,742 条。
+- Xiao noncommuting：4,312 条；程序交换子计算：4,312 条。
+- Xiao commuting/noncommuting 标记冲突：0。
 - nonsymmorphic：18,801 条。
 - symmorphic：48,674 条。
 
-全库验证检查标签完整性、`M_g^T A_g=s_g I`、`Q_g` 的半量子化、`L_B`
-不变性、graded 群闭包，以及遗忘 grading 后的群同态一致性。
+全库验证检查标签完整性、Xiao `Commute` 和 `Symmorphic SBZ` 两列的独立
+交叉认证、`M_g^T A_g=s_g I`、`Q_g` 的半量子化、`L_B` 不变性、graded
+群闭包，以及遗忘 grading 后的群同态一致性。
 
 ## 文件与哈希
 
 - 完整主数据库：`full_database/SSGReciprocalDatabase.full.json`
-  (`SHA-256 794f585cf9f37e1af59e19b975d2af94ba9754459b8f49f0594f540b6e287387`)
+  (`SHA-256 2662e6afdda821d17b26c26555a79e66e1a0a3e65650866f72080a615e756b42`)
 - O(3) 数据源：`official_sources/iso_ir/XiaoO3RepresentationSource.json`
   (`SHA-256 43afe9de18d4af23f92a18835bce8a3aa2103803a2fd52f3d5cc17ab345df27c`)
 - 分片索引：`SSGReciprocalDatabase/Data/Reciprocal/metadata.json`
-  (`SHA-256 d1128c72b6b342d86c5f3ed9893d47b420a5d9ba14fb68fa8bf1c95fbeb77de6`)
+  (`SHA-256 424c68af1f0601db663232097ac9a6c0cbc60bbd876c72b0f153cea625bd3c7d`)
 - 验证记录：`SSGReciprocalDatabase/Data/SSGReciprocalDatabaseValidation.json`
-  (`SHA-256 4d9fc571ec2ffd30be838fee2cb39ae645dd0df4459e0bc30e2afb09296451da`)
+  (`SHA-256 5193d1695a45abfb53f74612082149c1ac817d5192cce365016db2da76c1db95`)
 
 ## Mathematica 调用
 

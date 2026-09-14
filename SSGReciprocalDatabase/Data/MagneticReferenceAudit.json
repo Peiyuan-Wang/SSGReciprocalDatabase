@@ -1,0 +1,22 @@
+{
+  "SpglibVersion": "2.7.0",
+  "TypeIVEntriesChecked": 517,
+  "BinaryDiscrepancies": [
+    {
+      "UNI": 282,
+      "BNS": "37.184",
+      "ExpectedUnitarySG": 37,
+      "BinaryDatabaseUnitarySG": 36,
+      "ReconstructedUnitarySG": 37
+    },
+    {
+      "UNI": 284,
+      "BNS": "37.186",
+      "ExpectedUnitarySG": 37,
+      "BinaryDatabaseUnitarySG": 36,
+      "ReconstructedUnitarySG": 37
+    }
+  ],
+  "Status": "PASS_WITH_DOCUMENTED_RECONSTRUCTION",
+  "Reference": "https://github.com/spglib/spglib/blob/develop/database/msg/magnetic_hall_symbols.yaml"
+}

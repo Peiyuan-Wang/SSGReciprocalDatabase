@@ -1,0 +1,8 @@
+{
+  "Status": "PASS",
+  "Records": 67475,
+  "Certificates": 3953,
+  "MagneticGroupTypes": 1136,
+  "ElapsedSeconds": 295.885473542,
+  "Scope": "Exact colored Seitz equality, unitary lattice equality, source bindings and family-group projection"
+}

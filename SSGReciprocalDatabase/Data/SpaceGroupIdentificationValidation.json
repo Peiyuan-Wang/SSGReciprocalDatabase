@@ -1,0 +1,7 @@
+{
+  "Status": "PASS",
+  "Records": 67475,
+  "Certificates": 1117,
+  "ElapsedSeconds": 102.859702541,
+  "Scope": "Exact equality with spglib standard Seitz data and source-label binding; not a new verification of underlying O3 lifts"
+}

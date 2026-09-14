@@ -1,0 +1,9 @@
+{
+  "Status": "PASS",
+  "NamingSource": "SpaceGroupIrep rotation-name tables",
+  "UniquePointGeneratorMatrices": 661,
+  "DirectParentBravaisMatches": 640,
+  "CompatibleJonesTableFallbackMatches": 21,
+  "UnmatchedCount": 0,
+  "Unmatched": []
+}

@@ -1,5 +1,33 @@
 # SSGReciprocalDatabase GitHub 发布步骤
 
+## 推荐：自动发布脚本
+
+GitHub 不需要每次登录。首次登录或 token 失效后运行一次：
+
+```bash
+gh auth login -h github.com -p https -w
+```
+
+认证由 GitHub CLI 和 macOS 钥匙串保存，不要把 token 写入脚本或仓库。以后在仓库目录先预检：
+
+```bash
+./publish_release.sh 0.8.0
+```
+
+确认输出后自动提交指定源码和验证文件、推送当前分支、建立 `v0.8.0` Release 并上传 paclet：
+
+```bash
+./publish_release.sh 0.8.0 --publish
+```
+
+也可以指定发布说明：
+
+```bash
+./publish_release.sh 0.8.0 --publish --notes-file MAGNETIC_BUILD_REPORT_ZH.md
+```
+
+脚本使用 `release-files.txt` 白名单，不会提交完整生成数据库、缓存或 `dist/` 目录；完整数据库只随 paclet 作为 Release asset 上传。脚本会拒绝版本不一致、asset 缺失、已有 staged changes、重复 tag 或重复 Release。推送期间仍需能访问 GitHub；网络错误不是重新登录可以解决的。
+
 ## 发布前说明
 
 完整程序包位于：

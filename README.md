@@ -1,5 +1,22 @@
 # SSG reciprocal-group enumerator
 
+Version 0.8.0 retains antiunitary grading in magnetic space-group identification.
+Query `getSSGReciprocalMagneticSpaceGroup["N143.10.1"]` or
+`showSSGReciprocalMagneticGroup["N143.10.1"]`. All 67,475 stored labels map to
+1,136 BNS types with exact grading-preserving certificates. The older function
+continues to return the ordinary family group. Two spglib binary entries use
+documented reconstruction from the official magnetic Hall generators.
+See [the magnetic identification guide](MAGNETIC_SPACE_GROUP_IDENTIFICATION_ZH.md).
+
+Version 0.7.0 adds standard reciprocal space-group identification for all 67,475
+stored labels, with 182 ordinary space-group types and exact basis/origin
+certificates. Query `getSSGReciprocalSpaceGroup["N143.16.1"]` in Mathematica.
+See [the identification algorithm](SPACE_GROUP_IDENTIFICATION_ZH.md).
+Run `python3 identify_standard_space_groups.py` and
+`python3 validate_space_group_identification.py` to reproduce the new stage.
+The classification concerns the stored parameter representatives and keeps
+antiunitary grading separate from ordinary geometric space-group names.
+
 This directory contains an exact enumerator for reciprocal affine actions of
 spin-space groups (SSGs).  It uses lattice coordinates throughout.
 
@@ -83,7 +100,10 @@ The O(3) representation source and the derived reciprocal database are both
 complete for all 67,475 Xiao labels.  The latter is split into 230 parent-space-
 group shards, so a Mathematica query loads only the requested parent group.
 Every stored record has status `COMPLETE`; the exhaustive validator finds no
-disagreement with the Xiao symmorphic/nonsymmorphic labels.
+disagreement with either the Xiao `Commute` labels or the
+symmorphic/nonsymmorphic labels. The two crosses in Appendix F are parsed by
+their column positions rather than by merely testing whether a row contains a
+cross.
 
 ## Recompute one SSG from the official source
 
@@ -271,9 +291,13 @@ The complete English reference is provided in
 
 The database contains 67,475 complete records across all 230 parent space
 groups: 18,801 are nonsymmorphic and 48,674 are symmorphic under the stored
-common-origin test. The full validator checks the exact label set, status,
-Xiao-flag agreement, `M_g^T A_g=s_g I`, half-quantization of `Q_g`, invariance
-of `L_B`, graded closure, and the forgetful map to the momentum-action group.
+common-origin test. Among the 66,054 noncollinear records to which Xiao's
+`Commute` column applies, the table has 61,742 commuting and 4,312
+noncommuting entries. Direct computation from translation-lift commutators
+reproduces all 66,054 labels with zero disagreements. The full validator checks
+the exact label set, status, both Xiao-label agreements, `M_g^T A_g=s_g I`,
+half-quantization of `Q_g`, invariance of `L_B`, graded closure, and the
+forgetful map to the momentum-action group.
 These are mechanical and algebraic checks of the implemented convention; they
 do not replace independent scientific review of the underlying classification.
 

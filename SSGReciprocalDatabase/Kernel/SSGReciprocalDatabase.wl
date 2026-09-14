@@ -10,10 +10,18 @@ ClearAll @@ Names["SSGReciprocalDatabase`Private`*"];
 
 SSGReciprocalDatabaseVersion::usage =
   "SSGReciprocalDatabaseVersion gives the installed package version as {major, minor, patch}.";
-SSGReciprocalDatabaseVersion = {0, 6, 2};
+SSGReciprocalDatabaseVersion = {0, 8, 0};
 
 getSSGReciprocalData::usage =
   "getSSGReciprocalData[\"N6.9.19\"] returns all available reciprocal-space data for a Xiao SSG number.";
+getSSGReciprocalSpaceGroup::usage =
+  "getSSGReciprocalSpaceGroup[ssg] returns the ordinary reciprocal space-group type, Hall setting, and exact basis/origin certificate. The certificate applies to its InputOperations; grading remains in the SSG record.";
+getSSGReciprocalMagneticSpaceGroup::usage =
+  "getSSGReciprocalMagneticSpaceGroup[ssg] returns the reciprocal magnetic group BNS/UNI numbers, type I-IV, family space group and exact grading-preserving coordinate certificate. A already includes the antiunitary sign.";
+getSSGReciprocalFamilySpaceGroup::usage =
+  "getSSGReciprocalFamilySpaceGroup[ssg] returns the ordinary family space group obtained by forgetting primes; equivalent to getSSGReciprocalSpaceGroup.";
+showSSGReciprocalMagneticGroup::usage =
+  "showSSGReciprocalMagneticGroup[ssg] displays magnetic group identification and a row-by-row input/standard Seitz correspondence with antiunitary flags.";
 getSSGNonsymmorphic::usage =
   "getSSGNonsymmorphic[ssg] returns True or False.";
 getSSGNonsymmorphicInfo::usage =
@@ -69,6 +77,48 @@ $derivedCacheDirectory = FileNameJoin[{$UserBaseDirectory, "ApplicationData", "S
 $recomputeScript = FileNameJoin[{DirectoryName[$InputFileName], "..", "Scripts", "recompute_ssg_reciprocal.py"}];
 $rotationNameFile = FileNameJoin[{DirectoryName[$InputFileName], "..", "Data", "SpaceGroupIrepRotationNames.json"}];
 $rotationNameData =.;
+$spaceGroupFile = FileNameJoin[{DirectoryName[$InputFileName], "..", "Data", "SpaceGroupIdentification.json"}];
+$spaceGroupData =.;
+$magneticGroupFile = FileNameJoin[{DirectoryName[$InputFileName], "..", "Data", "MagneticSpaceGroupIdentification.json"}];
+$magneticGroupData =.;
+
+getSSGReciprocalMagneticSpaceGroup[ssg_String] := Module[{key, result},
+  If[!AssociationQ[$magneticGroupData], $magneticGroupData = Import[$magneticGroupFile, "RawJSON"]];
+  key = Lookup[Lookup[$magneticGroupData, "Labels", <||>], ssg, Missing["UnknownSSGNumber", ssg]];
+  If[MissingQ[key], Return[key]];
+  result = Lookup[$magneticGroupData["Classes"], key, Missing["NotComputed", ssg]];
+  If[MissingQ[result], result, Append[result,
+    "FamilySpaceGroup" -> Lookup[$magneticGroupData["FamilySpaceGroups"], ssg]]]
+];
+getSSGReciprocalMagneticSpaceGroup[ssg_] := Missing["InvalidSSGNumber", ssg];
+getSSGReciprocalFamilySpaceGroup[ssg_] := getSSGReciprocalSpaceGroup[ssg];
+
+showSSGReciprocalMagneticGroup[ssg_] := Module[{info, inputs, rows},
+  info = getSSGReciprocalMagneticSpaceGroup[ssg];
+  If[MissingQ[info], Return[info]];
+  inputs = info["InputOperations"];
+  rows = Map[Function[row, With[{input = inputs[[row["InputIndex"]]], standard = row["StandardOperation"]},
+    {row["InputIndex"], If[row["Antiunitary"], "Yes", "No"],
+     MatrixForm[input["LinearPart"]], input["FractionalTranslation"],
+     MatrixForm[standard["LinearPart"]], standard["FractionalTranslation"]}]],
+    info["InputToStandardOperations"]];
+  Column[{
+    Row[{"BNS ", info["BNSNumber"], "  |  UNI ", info["UNINumber"],
+      "  |  Type ", {"I", "II", "III", "IV"}[[info["MagneticType"]]],
+      "  |  Family ", info["FamilySpaceGroup"]["InternationalSymbol"]}],
+    Row[{"C = ", MatrixForm[info["CoordinateMatrix"]], "   theta = ", info["OriginShift"]}],
+    Grid[Prepend[rows, {"#", "Antiunitary", "A (input)", "Q (input)", "A (standard)", "Q (standard)"}],
+      Frame -> All, Alignment -> Center, Background -> {None, {LightGray, None}}]
+  }, Spacings -> 1]
+];
+
+getSSGReciprocalSpaceGroup[ssg_String] := Module[{key},
+  If[!AssociationQ[$spaceGroupData], $spaceGroupData = Import[$spaceGroupFile, "RawJSON"]];
+  key = Lookup[Lookup[$spaceGroupData, "Labels", <||>], ssg, Missing["UnknownSSGNumber", ssg]];
+  If[MissingQ[key], Return[key]];
+  Lookup[$spaceGroupData["Classes"], key, Missing["NotComputed", ssg]]
+];
+getSSGReciprocalSpaceGroup[ssg_] := Missing["InvalidSSGNumber", ssg];
 
 loadDatabase[] := If[!AssociationQ[$database], $database = Import[$databaseFile, "RawJSON"]];
 loadDatabaseParent[spaceGroup_Integer] := Module[{key = ToString[spaceGroup], file},
@@ -116,7 +166,12 @@ missingField[record_, field_] := Missing[
     "Reason" -> Lookup[record, "Reason", None]|>
 ];
 
-getSSGReciprocalData[ssg_] := lookupRecord[ssg];
+getSSGReciprocalData[ssg_] := Module[{record = lookupRecord[ssg]},
+  If[MissingQ[record], record,
+    Join[record, <|"ReciprocalSpaceGroup" -> getSSGReciprocalSpaceGroup[ssg],
+      "ReciprocalFamilySpaceGroup" -> getSSGReciprocalFamilySpaceGroup[ssg],
+      "ReciprocalMagneticSpaceGroup" -> getSSGReciprocalMagneticSpaceGroup[ssg]|>]]
+];
 
 getSSGNonsymmorphic[ssg_] := Module[{record = lookupRecord[ssg]},
   If[MissingQ[record], record, Lookup[record, "Nonsymmorphic"]]

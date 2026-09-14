@@ -123,6 +123,12 @@ def complete_record(record: dict, inventory: dict) -> dict:
                 "in the parent direct-lattice basis; the matrix is in column HNF."
             ),
             "TranslationProjectivity": record.get("translation_projectivity"),
+            "XiaoTableTranslationProjectivity": record.get(
+                "xiao_table_translation_projectivity"
+            ),
+            "AgreementWithXiaoTranslationProjectivity": record.get(
+                "agreement_with_xiao_translation_projectivity"
+            ),
             "XiaoTableNonsymmorphic": bool(record.get("xiao_table_nonsymmorphic", False)),
             "AgreementWithXiaoNonsymmorphicFlag": record.get(
                 "agreement_with_xiao_nonsymmorphic_flag"

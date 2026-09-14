@@ -4,7 +4,16 @@
   "ExpectedLabelCount": 67475,
   "FailureCount": 0,
   "Failures": [],
+  "TranslationProjectivityCrossValidation": {
+    "ApplicableRecordCount": 66054,
+    "XiaoCommutingCount": 61742,
+    "XiaoNoncommutingCount": 4312,
+    "DisagreementCount": 0,
+    "Disagreements": []
+  },
   "Statistics": {
+    "Computed:commuting": 61742,
+    "Computed:noncommuting": 4312,
     "GradedOrder:1": 5,
     "GradedOrder:12": 2185,
     "GradedOrder:16": 26772,
@@ -19,6 +28,8 @@
     "GradedOrder:96": 363,
     "Nonsymmorphic": 18801,
     "Symmorphic": 48674,
+    "Xiao:commuting": 61742,
+    "Xiao:noncommuting": 4312,
     "collinear": 1421,
     "coplanar": 9542,
     "noncoplanar": 56512

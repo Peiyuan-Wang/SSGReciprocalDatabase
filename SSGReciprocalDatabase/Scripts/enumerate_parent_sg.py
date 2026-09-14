@@ -36,6 +36,7 @@ from enumerate_reciprocal_groups import (
     torus_system,
 )
 from xiao_o3_matrix_source import XiaoO3MatrixSource
+from xiao_appendix_f import appendix_f_labels
 
 
 HERE = Path(__file__).resolve().parent
@@ -519,6 +520,7 @@ def iso_ir_parent_data(
 
 def analyze_ssg(row: dict, parent_data: dict) -> dict:
     order = row["id"][0]
+    table_labels = appendix_f_labels(row["id"], row["classification_row_raw"])
     target_dimension = {"L": 1, "P": 2, "N": 3}[order]
     if "rho_matrices" in parent_data:
         labels = list(parent_data["representation_labels"])
@@ -696,6 +698,17 @@ def analyze_ssg(row: dict, parent_data: dict) -> dict:
             "translation_projectivity": (
                 "noncommuting" if any(int(value) for value in commutator) else "commuting"
             ),
+            "xiao_table_translation_projectivity": table_labels[
+                "translation_projectivity"
+            ],
+            "agreement_with_xiao_translation_projectivity": (
+                None
+                if table_labels["translation_projectivity"] is None
+                else (
+                    "noncommuting" if any(int(value) for value in commutator) else "commuting"
+                )
+                == table_labels["translation_projectivity"]
+            ),
             "common_spin_axis_real_basis": (
                 None if spin_axis is None else [str(sp.simplify(value)) for value in spin_axis]
             ),
@@ -737,11 +750,12 @@ def analyze_ssg_iso_ir(
     )
     row = next((item for item in inventory if item["id"] == xiao_label), None)
     if row is None:
+        table_labels = appendix_f_labels(xiao_label, source_record["AppendixFDisplay"])
         row = {
             "id": xiao_label,
             "parent_sg": source_record["ParentSpaceGroup"],
             "classification_row_raw": source_record["AppendixFDisplay"],
-            "xiao_table_nonsymmorphic": "×" in source_record["AppendixFDisplay"],
+            "xiao_table_nonsymmorphic": table_labels["nonsymmorphic"],
         }
     parent_data = iso_ir_parent_data(
         source,
