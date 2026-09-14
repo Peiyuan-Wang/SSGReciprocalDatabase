@@ -150,9 +150,19 @@ else
 fi
 git push origin "$branch"
 
-if gh release view "$tag" >/dev/null 2>&1; then
-  printf 'GitHub Release already exists; nothing more to upload.\n'
-  gh release view "$tag" --json url,tagName,name,assets
+if release_state="$(gh release view "$tag" --json isDraft --jq '.isDraft' 2>/dev/null)"; then
+  remote_digest="$(gh release view "$tag" --json assets --jq ".assets[] | select(.name == \"$(basename "$asset")\") | .digest" 2>/dev/null || true)"
+  if [[ "$remote_digest" != "sha256:$checksum" ]]; then
+    printf 'Uploading missing or outdated release asset.\n'
+    gh release upload "$tag" "$asset" --clobber
+  fi
+  if [[ "$release_state" == "true" ]]; then
+    printf 'Publishing existing draft release.\n'
+    gh release edit "$tag" --draft=false
+  else
+    printf 'GitHub Release and matching asset already exist.\n'
+  fi
+  gh release view "$tag" --json url,tagName,name,isDraft,assets
   exit 0
 fi
 

@@ -26,7 +26,7 @@ gh auth login -h github.com -p https -w
 ./publish_release.sh 0.8.0 --publish --notes-file MAGNETIC_BUILD_REPORT_ZH.md
 ```
 
-脚本使用 `release-files.txt` 白名单，不会提交完整生成数据库、缓存或 `dist/` 目录；完整数据库只随 paclet 作为 Release asset 上传。脚本会拒绝版本不一致、asset 缺失和已有 staged changes，并能在网络中断后从已有发布提交继续。每次运行都会读取 macOS 系统代理：系统代理开启时使用当前代理，关闭时清除终端遗留的代理变量并直连。网络错误不是重新登录可以解决的。
+脚本使用 `release-files.txt` 白名单，不会提交完整生成数据库、缓存或 `dist/` 目录；完整数据库只随 paclet 作为 Release asset 上传。脚本会拒绝版本不一致、asset 缺失和已有 staged changes，并能在网络中断后从已有发布提交继续。如果 GitHub 已留下草稿，脚本会比较安装包 SHA-256，补传缺失资源并发布原草稿，不会重复建立 Release。每次运行都会读取 macOS 系统代理：系统代理开启时使用当前代理，关闭时清除终端遗留的代理变量并直连。网络错误不是重新登录可以解决的。
 
 ## 发布前说明
 
