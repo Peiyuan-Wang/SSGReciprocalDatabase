@@ -1,6 +1,41 @@
 #!/bin/bash
 set -euo pipefail
 
+configure_proxy_from_macos() {
+  local state http_enabled https_enabled socks_enabled host port
+  state="$(scutil --proxy 2>/dev/null || true)"
+  http_enabled="$(awk '$1 == "HTTPEnable" {print $3; exit}' <<<"$state")"
+  https_enabled="$(awk '$1 == "HTTPSEnable" {print $3; exit}' <<<"$state")"
+  socks_enabled="$(awk '$1 == "SOCKSEnable" {print $3; exit}' <<<"$state")"
+  if [[ "$http_enabled" == "1" ]]; then
+    host="$(awk '$1 == "HTTPProxy" {print $3; exit}' <<<"$state")"
+    port="$(awk '$1 == "HTTPPort" {print $3; exit}' <<<"$state")"
+    export HTTP_PROXY="http://$host:$port" http_proxy="http://$host:$port"
+  else
+    unset HTTP_PROXY http_proxy
+  fi
+  if [[ "$https_enabled" == "1" ]]; then
+    host="$(awk '$1 == "HTTPSProxy" {print $3; exit}' <<<"$state")"
+    port="$(awk '$1 == "HTTPSPort" {print $3; exit}' <<<"$state")"
+    export HTTPS_PROXY="http://$host:$port" https_proxy="http://$host:$port"
+  elif [[ "$http_enabled" == "1" ]]; then
+    export HTTPS_PROXY="$HTTP_PROXY" https_proxy="$HTTP_PROXY"
+  else
+    unset HTTPS_PROXY https_proxy
+  fi
+  if [[ "$socks_enabled" == "1" && "$http_enabled" != "1" ]]; then
+    host="$(awk '$1 == "SOCKSProxy" {print $3; exit}' <<<"$state")"
+    port="$(awk '$1 == "SOCKSPort" {print $3; exit}' <<<"$state")"
+    export ALL_PROXY="socks5h://$host:$port" all_proxy="socks5h://$host:$port"
+  else
+    unset ALL_PROXY all_proxy
+  fi
+}
+
+# New processes follow the current macOS proxy switch. This removes stale
+# terminal variables when System Proxy is off and restores them when it is on.
+configure_proxy_from_macos
+
 usage() {
   printf '%s\n' \
     "Usage: ./publish_release.sh VERSION [--publish] [--notes-file FILE]" \
@@ -67,6 +102,11 @@ printf 'Remote: %s\n' "$remote_url"
 printf 'Asset: %s\n' "$asset"
 printf 'SHA256: %s\n' "$checksum"
 printf 'Manifest entries: %s\n' "${#files[@]}"
+if [[ -n "${HTTPS_PROXY:-${ALL_PROXY:-}}" ]]; then
+  printf 'Network: macOS system proxy\n'
+else
+  printf 'Network: direct (macOS system proxy is off)\n'
+fi
 
 if ((publish == 0)); then
   if gh auth status -h github.com >/dev/null 2>&1; then
