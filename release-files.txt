@@ -6,6 +6,7 @@ GITHUB_PUBLISHING_GUIDE_ZH.md
 FULL_DATABASE_BUILD_REPORT_ZH.md
 MAGNETIC_BUILD_REPORT_ZH.md
 MAGNETIC_SPACE_GROUP_IDENTIFICATION_ZH.md
+RELEASE_NOTES_0.8.1.md
 SPACE_GROUP_IDENTIFICATION_ZH.md
 SSGReciprocalDatabase_UserGuide_EN.md
 SSGReciprocalDatabase_UserGuide_EN.docx
@@ -39,5 +40,6 @@ test_standard_space_groups.wl
 test_xiao_o3_matrix_source.py
 validate_rotation_names.py
 build_paclet_080.py
+build_paclet.py
 release-files.txt
 publish_release.sh

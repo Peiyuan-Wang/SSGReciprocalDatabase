@@ -1,5 +1,9 @@
 # SSG reciprocal-group enumerator
 
+Version 0.8.1 adds concise input/output documentation to every public Wolfram
+Language symbol. After loading, evaluate `?SSGReciprocalDatabase\`*` to list
+all 24 public functions and their usage messages.
+
 Version 0.8.0 retains antiunitary grading in magnetic space-group identification.
 Query `getSSGReciprocalMagneticSpaceGroup["N143.10.1"]` or
 `showSSGReciprocalMagneticGroup["N143.10.1"]`. All 67,475 stored labels map to

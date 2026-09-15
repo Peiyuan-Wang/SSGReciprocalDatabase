@@ -1,7 +1,7 @@
 Get[FileNameJoin[{DirectoryName[$InputFileName], "SSGReciprocalDatabase", "Kernel", "SSGReciprocalDatabase.wl"}]];
 
 status = SSGReciprocalDatabaseStatus[];
-If[SSGReciprocalDatabaseVersion =!= {0, 8, 0}, Exit[1]];
+If[SSGReciprocalDatabaseVersion =!= {0, 8, 1}, Exit[1]];
 If[Lookup[status, "RecordCount"] =!= 67475, Exit[1]];
 If[Lookup[status, "CompleteCount"] =!= 67475, Exit[2]];
 If[Lookup[status, "ComputedParentSpaceGroups"] =!= 230, Exit[3]];
@@ -48,6 +48,9 @@ If[AnyTrue[Lookup[SSGReciprocalGenElem["N143.16.1"], "FractionalTranslation"],
     # =!= {0, 0, 0} &], Exit[25]];
 If[AnyTrue[Lookup[SSGReciprocalGroupElements["N143.16.1"], "FractionalTranslation"],
     # =!= {0, 0, 0} &], Exit[26]];
+publicNames = Names["SSGReciprocalDatabase`*"];
+If[Length[publicNames] =!= 24, Exit[27]];
+If[!AllTrue[publicNames, StringQ[ToExpression[# <> "::usage"]] &], Exit[28]];
 Print[<|"RecordCount" -> Lookup[status, "RecordCount"],
   "CompleteCount" -> Lookup[status, "CompleteCount"],
   "ParentSpaceGroups" -> Lookup[status, "ComputedParentSpaceGroups"],

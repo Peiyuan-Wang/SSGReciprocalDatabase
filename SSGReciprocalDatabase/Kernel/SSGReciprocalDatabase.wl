@@ -9,55 +9,55 @@ ClearAll @@ Names["SSGReciprocalDatabase`*"];
 ClearAll @@ Names["SSGReciprocalDatabase`Private`*"];
 
 SSGReciprocalDatabaseVersion::usage =
-  "SSGReciprocalDatabaseVersion gives the installed package version as {major, minor, patch}.";
-SSGReciprocalDatabaseVersion = {0, 8, 0};
+  "SSGReciprocalDatabaseVersion returns the installed version as the integer list {major, minor, patch}.";
+SSGReciprocalDatabaseVersion = {0, 8, 1};
 
 getSSGReciprocalData::usage =
-  "getSSGReciprocalData[\"N6.9.19\"] returns all available reciprocal-space data for a Xiao SSG number.";
+  "getSSGReciprocalData[ssg] takes a Xiao SSG label such as \"N143.10.1\" and returns an Association containing all stored reciprocal-space data and group identifications.";
 getSSGReciprocalSpaceGroup::usage =
-  "getSSGReciprocalSpaceGroup[ssg] returns the ordinary reciprocal space-group type, Hall setting, and exact basis/origin certificate. The certificate applies to its InputOperations; grading remains in the SSG record.";
+  "getSSGReciprocalSpaceGroup[ssg] takes a Xiao SSG label and returns an Association identifying the ordinary reciprocal space group obtained after forgetting antiunitary grading, including its number, symbol, setting, and exact coordinate-change certificate.";
 getSSGReciprocalMagneticSpaceGroup::usage =
-  "getSSGReciprocalMagneticSpaceGroup[ssg] returns the reciprocal magnetic group BNS/UNI numbers, type I-IV, family space group and exact grading-preserving coordinate certificate. A already includes the antiunitary sign.";
+  "getSSGReciprocalMagneticSpaceGroup[ssg] takes a Xiao SSG label and returns an Association containing the reciprocal magnetic group's BNS, UNI, and OG numbers, type I-IV, family space group, and exact grading-preserving coordinate certificate.";
 getSSGReciprocalFamilySpaceGroup::usage =
-  "getSSGReciprocalFamilySpaceGroup[ssg] returns the ordinary family space group obtained by forgetting primes; equivalent to getSSGReciprocalSpaceGroup.";
+  "getSSGReciprocalFamilySpaceGroup[ssg] takes a Xiao SSG label and returns the ordinary family-space-group Association obtained by forgetting all antiunitary primes. It is an alias of getSSGReciprocalSpaceGroup[ssg].";
 showSSGReciprocalMagneticGroup::usage =
-  "showSSGReciprocalMagneticGroup[ssg] displays magnetic group identification and a row-by-row input/standard Seitz correspondence with antiunitary flags.";
+  "showSSGReciprocalMagneticGroup[ssg] takes a Xiao SSG label and displays a formatted table containing the magnetic-group identification and the input-to-standard Seitz correspondence, with antiunitary operations marked explicitly.";
 getSSGNonsymmorphic::usage =
-  "getSSGNonsymmorphic[ssg] returns True or False.";
+  "getSSGNonsymmorphic[ssg] takes a Xiao SSG label and returns True if its momentum-space fractional translations cannot be removed by one common origin shift, and False otherwise.";
 getSSGNonsymmorphicInfo::usage =
-  "getSSGNonsymmorphicInfo[ssg] returns the value together with its evidence source.";
+  "getSSGNonsymmorphicInfo[ssg] takes a Xiao SSG label and returns an Association with the momentum-space nonsymmorphic True/False result and the source used for that result.";
 getSSGLB::usage =
-  "getSSGLB[ssg] returns the column-HNF basis matrix of the translation-lift center lattice L_B.";
+  "getSSGLB[ssg] takes a Xiao SSG label and returns the 3x3 column-Hermite-normal-form matrix whose columns generate the Bloch lattice L_B in parent-lattice coordinates.";
 SSGReciprocalGenElem::usage =
-  "SSGReciprocalGenElem[ssg] returns reciprocal Seitz generators with separate linear and fractional-translation parts.";
+  "SSGReciprocalGenElem[ssg] takes a Xiao SSG label and returns a List of reciprocal generators. Each generator is an Association containing its linear matrix A_g, fractional shift Q_g, Seitz pair, and antiunitary grading.";
 SSGReciprocalGroupElements::usage =
-  "SSGReciprocalGroupElements[ssg] returns the closed reciprocal momentum-action group as Seitz elements (A_g,Q_g).";
+  "SSGReciprocalGroupElements[ssg] takes a Xiao SSG label and returns a List of all distinct elements in the closed reciprocal momentum-action group, written as Seitz data (A_g,Q_g) without using the grading as part of equality.";
 SSGGradedReciprocalGroupElements::usage =
-  "SSGGradedReciprocalGroupElements[ssg] returns the closed reciprocal group while retaining the unitary/antiunitary grading.";
+  "SSGGradedReciprocalGroupElements[ssg] takes a Xiao SSG label and returns a List of all distinct reciprocal group elements (A_g,Q_g,s_g), retaining whether each element is unitary or antiunitary.";
 getSSGReciprocalGenTab::usage =
-  "getSSGReciprocalGenTab[ssg] returns all three parent translations and the selected spatial point generators with real- and reciprocal-space Seitz data.";
+  "getSSGReciprocalGenTab[ssg] takes a Xiao SSG label and returns an Association for the three parent translations and all selected point generators, including real-space {M_g|t_g}, reciprocal-space {A_g|Q_g}, grading, eta_g, L_B, and the global nonsymmorphic result.";
 showSSGReciprocalGenTab::usage =
-  "showSSGReciprocalGenTab[ssg] displays an English generator table in the style of SpaceGroupIrep.";
+  "showSSGReciprocalGenTab[ssg] takes a Xiao SSG label and displays the output of getSSGReciprocalGenTab[ssg] as a formatted English generator table.";
 SSGReciprocalSymmetryTable::usage =
-  "SSGReciprocalSymmetryTable[ssg] is a compatibility alias for showSSGReciprocalGenTab[ssg].";
+  "SSGReciprocalSymmetryTable[ssg] takes a Xiao SSG label and displays its formatted reciprocal-symmetry table. It is an alias of showSSGReciprocalGenTab[ssg].";
 SSGReciprocalDatabaseStatus::usage =
-  "SSGReciprocalDatabaseStatus[] returns database coverage and source information.";
+  "SSGReciprocalDatabaseStatus[] takes no arguments and returns an Association describing database version, coverage, source files, validation state, and labels recomputed locally.";
 SSGReciprocalDatabaseLabels::usage =
-  "SSGReciprocalDatabaseLabels[] returns all indexed Xiao SSG numbers.";
+  "SSGReciprocalDatabaseLabels[] takes no arguments and returns a List of all indexed Xiao SSG labels.";
 getSSGO3RepresentationData::usage =
-  "getSSGO3RepresentationData[ssg] returns the complete Xiao-to-ISO-IR O(3) representation record.";
+  "getSSGO3RepresentationData[ssg] takes a Xiao SSG label and returns an Association containing its complete Xiao-to-ISO-IR O(3) representation record, including magnetic-order type and available alternatives.";
 getSSGO3RepresentationAlternatives::usage =
-  "getSSGO3RepresentationAlternatives[ssg] returns all official ISO-IR representatives of the Xiao equivalence class.";
+  "getSSGO3RepresentationAlternatives[ssg] takes a Xiao SSG label and returns a List of all stored official ISO-IR constituent choices representing the same Xiao O(3) equivalence class.";
 SSGO3SeitzOperators::usage =
-  "SSGO3SeitzOperators[ssg, Alternative -> n] returns the ISO-IR representative Seitz operators.";
+  "SSGO3SeitzOperators[ssg, Alternative -> n] takes a Xiao SSG label and a positive alternative index and returns a List of 4x4 augmented Seitz matrices for the three primitive translations followed by the point generators.";
 SSGO3RepresentationMatrices::usage =
-  "SSGO3RepresentationMatrices[ssg, Alternative -> n, Parameters -> p] returns Xiao's exact physical O(1), O(2), or O(3) matrices.";
+  "SSGO3RepresentationMatrices[ssg, Alternative -> n, Parameters -> p] returns a List of exact physical O(1), O(2), or O(3) representation matrices, ordered like SSGO3SeitzOperators. Parameters is Automatic or one {alpha,beta,gamma} list for each ISO-IR constituent.";
 SSGO3EmbeddedRepresentationMatrices::usage =
-  "SSGO3EmbeddedRepresentationMatrices[ssg, opts] embeds Xiao O(1)/O(2)/O(3) matrices uniformly into O(3).";
+  "SSGO3EmbeddedRepresentationMatrices[ssg, Alternative -> n, Parameters -> p] returns the same ordered representation matrices as SSGO3RepresentationMatrices, with every O(1) or O(2) matrix embedded into a 3x3 O(3) matrix.";
 SSGO3RepresentationDatabaseStatus::usage =
-  "SSGO3RepresentationDatabaseStatus[] returns source, convention, and exhaustive-validation metadata.";
+  "SSGO3RepresentationDatabaseStatus[] takes no arguments and returns an Association containing O(3)-database sources, coordinate convention, record counts, and validation reports.";
 SSGRecomputeReciprocalData::usage =
-  "SSGRecomputeReciprocalData[ssg] recomputes L_B, s_g, M_g, and Q_g from the official ISO-IR-backed Xiao O(3) source and caches the result.";
+  "SSGRecomputeReciprocalData[ssg, Alternative -> n, Parameters -> p] takes a Xiao SSG label, recomputes L_B, s_g, M_g, and Q_g from the stored ISO-IR representation data, writes a local cached JSON record, and returns that record as an Association or Failure.";
 
 Begin["`Private`"];
 

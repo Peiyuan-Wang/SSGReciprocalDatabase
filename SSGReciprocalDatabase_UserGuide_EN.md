@@ -1,4 +1,26 @@
-# SSGReciprocalDatabase 0.8.0 User Guide
+# SSGReciprocalDatabase 0.8.1 User Guide
+
+## Function help
+
+After loading the package, evaluate the following command to list every public
+function together with its input and output:
+
+```wl
+<< "SSGReciprocalDatabase`"
+?SSGReciprocalDatabase`*
+```
+
+Use `?function` for one function only. For example:
+
+```wl
+?getSSGLB
+?getSSGReciprocalMagneticSpaceGroup
+?SSGO3RepresentationMatrices
+```
+
+In the help text, `ssg` means a Xiao SSG label given as a string, for example
+`"N143.10.1"`. Functions that cannot find a requested label or field return a
+`Missing` expression. A recomputation failure returns `Failure`.
 
 ## Magnetic reciprocal space-group identification
 

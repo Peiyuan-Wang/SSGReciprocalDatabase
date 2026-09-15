@@ -1,6 +1,6 @@
 Get[FileNameJoin[{DirectoryName[$InputFileName], "SSGReciprocalDatabase", "Kernel", "SSGReciprocalDatabase.wl"}]];
 tests = {
- VerificationTest[SSGReciprocalDatabaseVersion, {0,8,0}],
+ VerificationTest[SSGReciprocalDatabaseVersion, {0,8,1}],
  VerificationTest[getSSGReciprocalMagneticSpaceGroup["N143.10.1"]["BNSNumber"], "147.15"],
  VerificationTest[getSSGReciprocalMagneticSpaceGroup["N143.10.1"]["MagneticType"], 3],
  VerificationTest[getSSGReciprocalMagneticSpaceGroup["N143.16.1"]["MagneticType"], 1],
