@@ -10,7 +10,7 @@ ClearAll @@ Names["SSGReciprocalDatabase`Private`*"];
 
 SSGReciprocalDatabaseVersion::usage =
   "SSGReciprocalDatabaseVersion returns the installed version as the integer list {major, minor, patch}.";
-SSGReciprocalDatabaseVersion = {0, 8, 1};
+SSGReciprocalDatabaseVersion = {0, 8, 2};
 
 getSSGReciprocalData::usage =
   "getSSGReciprocalData[ssg] takes a Xiao SSG label such as \"N143.10.1\" and returns an Association containing all stored reciprocal-space data and group identifications.";

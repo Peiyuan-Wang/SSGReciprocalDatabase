@@ -1,4 +1,4 @@
-# SSGReciprocalDatabase 0.8.1 User Guide
+# SSGReciprocalDatabase 0.8.2 User Guide
 
 ## Function help
 
@@ -109,6 +109,27 @@ where `M_g` is the spatial integer matrix and `s_g` is `+1` for a unitary
 operation and `-1` for an antiunitary operation.
 
 ## 2. Installation and loading
+
+For a first installation, including on a Wolfram setup whose user paclet
+repository has not yet been initialized, evaluate this single command:
+
+```wl
+Get["https://raw.githubusercontent.com/Peiyuan-Wang/SSGReciprocalDatabase/main/InstallSSGReciprocalDatabase.wl"]
+```
+
+The bootstrap installer creates the standard user paclet directories when
+needed, installs the versioned release asset from GitHub, and loads the package.
+It does not require administrator privileges.
+
+For an already downloaded `.paclet` file, use the repository-safe local form:
+
+```wl
+repo = FileNameJoin[{$UserBaseDirectory, "Paclets", "Repository"}];
+If[!DirectoryQ[repo],
+  CreateDirectory[repo, CreateIntermediateDirectories -> True]
+];
+PacletInstall["/absolute/path/SSGReciprocalDatabase-0.8.2.paclet"]
+```
 
 Place the directory `SSGReciprocalDatabase` in one of the Wolfram application
 directories, such as:

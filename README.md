@@ -1,5 +1,13 @@
 # SSG reciprocal-group enumerator
 
+Version 0.8.2 adds a bootstrap installer that initializes a missing Wolfram
+user paclet repository before calling `PacletInstall`. A new user can install
+the current release directly from Mathematica with:
+
+```wl
+Get["https://raw.githubusercontent.com/Peiyuan-Wang/SSGReciprocalDatabase/main/InstallSSGReciprocalDatabase.wl"]
+```
+
 Version 0.8.1 adds concise input/output documentation to every public Wolfram
 Language symbol. After loading, evaluate `?SSGReciprocalDatabase\`*` to list
 all 24 public functions and their usage messages.

@@ -1,4 +1,4 @@
-file = FileNameJoin[{DirectoryName[$InputFileName], "dist", "SSGReciprocalDatabase-0.8.1.paclet"}];
+file = FileNameJoin[{DirectoryName[$InputFileName], "dist", "SSGReciprocalDatabase-0.8.2.paclet"}];
 Print["Isolated user base: ", $UserBaseDirectory];
 installed = PacletInstall[file];
 Print[installed];
