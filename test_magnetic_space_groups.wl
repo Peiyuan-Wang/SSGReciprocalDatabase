@@ -1,6 +1,6 @@
 Get[FileNameJoin[{DirectoryName[$InputFileName], "SSGReciprocalDatabase", "Kernel", "SSGReciprocalDatabase.wl"}]];
 tests = {
- VerificationTest[SSGReciprocalDatabaseVersion, {0,8,1}],
+ VerificationTest[SSGReciprocalDatabaseVersion, {0,8,3}],
  VerificationTest[getSSGReciprocalMagneticSpaceGroup["N143.10.1"]["BNSNumber"], "147.15"],
  VerificationTest[getSSGReciprocalMagneticSpaceGroup["N143.10.1"]["MagneticType"], 3],
  VerificationTest[getSSGReciprocalMagneticSpaceGroup["N143.16.1"]["MagneticType"], 1],
@@ -8,6 +8,14 @@ tests = {
  VerificationTest[getSSGReciprocalMagneticSpaceGroup["N65.9.188"]["BNSNumber"], "37.184"],
  VerificationTest[getSSGReciprocalFamilySpaceGroup["N143.10.1"]["InternationalNumber"], 147],
  VerificationTest[Head[showSSGReciprocalMagneticGroup["N143.10.1"]], Column],
+ VerificationTest[
+  Module[{rows = First @ Cases[showSSGReciprocalMagneticGroup["N143.10.1"],
+      Grid[value_, ___] :> value, Infinity]}, rows[[2 ;;, 2]]],
+  {"E", "C3-", "C3+", "C3+", "C3-", "E"}],
+ VerificationTest[
+  Module[{rows = First @ Cases[showSSGReciprocalMagneticGroup["N143.10.1"],
+      Grid[value_, ___] :> value, Infinity]}, rows[[2 ;;, 3]]],
+  {"I'", "S6+'", "S6-'", "C3+", "C3-", "E"}],
  VerificationTest[MissingQ[getSSGReciprocalMagneticSpaceGroup["INVALID"]], True]
 };
 report = TestReport[tests];

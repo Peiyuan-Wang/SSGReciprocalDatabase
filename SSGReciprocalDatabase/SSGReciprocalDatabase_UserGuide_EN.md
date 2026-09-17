@@ -1,4 +1,4 @@
-# SSGReciprocalDatabase 0.8.2 User Guide
+# SSGReciprocalDatabase 0.8.3 User Guide
 
 ## Function help
 
@@ -33,8 +33,14 @@ getSSGReciprocalFamilySpaceGroup["N143.10.1"]
 The first function returns BNS, UNI and OG numbers, magnetic type I-IV, the
 family space group, and an exact grading-preserving coordinate certificate.
 The second displays input and standard Seitz operations side by side with
-their antiunitary flags. The third forgets the flags and returns the ordinary
-family group; it aliases the older `getSSGReciprocalSpaceGroup` function.
+their antiunitary flags. Its `Parent operation` column names the spatial point
+operation recovered in the SSG parent-group basis. Its `MSG operation` column
+names the reciprocal operation after the exact transformation to the standard
+magnetic-group coordinates; a trailing prime marks an antiunitary operation.
+The adjacent `Q` columns retain the translation part, so screw, glide, and
+antiunitary-translation information is not discarded. The third function
+forgets the flags and returns the ordinary family group; it aliases the older
+`getSSGReciprocalSpaceGroup` function.
 
 The input is `(A,Q,s)`, where `A = s Inverse[Transpose[M]]`. The antiunitary
 sign is already included in `A`: a primed database operation uses this same
@@ -115,7 +121,7 @@ repository has not yet been initialized, evaluate this single command:
 
 ```wl
 Get[URLDownload[
-  "https://github.com/Peiyuan-Wang/SSGReciprocalDatabase/releases/download/v0.8.2/InstallSSGReciprocalDatabase.wl"
+  "https://github.com/Peiyuan-Wang/SSGReciprocalDatabase/releases/download/v0.8.3/InstallSSGReciprocalDatabase.wl"
 ]]
 ```
 
@@ -130,7 +136,7 @@ repo = FileNameJoin[{$UserBaseDirectory, "Paclets", "Repository"}];
 If[!DirectoryQ[repo],
   CreateDirectory[repo, CreateIntermediateDirectories -> True]
 ];
-PacletInstall["/absolute/path/SSGReciprocalDatabase-0.8.2.paclet"]
+PacletInstall["/absolute/path/SSGReciprocalDatabase-0.8.3.paclet"]
 ```
 
 Place the directory `SSGReciprocalDatabase` in one of the Wolfram application

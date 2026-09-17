@@ -10,7 +10,7 @@ ClearAll @@ Names["SSGReciprocalDatabase`Private`*"];
 
 SSGReciprocalDatabaseVersion::usage =
   "SSGReciprocalDatabaseVersion returns the installed version as the integer list {major, minor, patch}.";
-SSGReciprocalDatabaseVersion = {0, 8, 2};
+SSGReciprocalDatabaseVersion = {0, 8, 3};
 
 getSSGReciprocalData::usage =
   "getSSGReciprocalData[ssg] takes a Xiao SSG label such as \"N143.10.1\" and returns an Association containing all stored reciprocal-space data and group identifications.";
@@ -21,7 +21,7 @@ getSSGReciprocalMagneticSpaceGroup::usage =
 getSSGReciprocalFamilySpaceGroup::usage =
   "getSSGReciprocalFamilySpaceGroup[ssg] takes a Xiao SSG label and returns the ordinary family-space-group Association obtained by forgetting all antiunitary primes. It is an alias of getSSGReciprocalSpaceGroup[ssg].";
 showSSGReciprocalMagneticGroup::usage =
-  "showSSGReciprocalMagneticGroup[ssg] takes a Xiao SSG label and displays a formatted table containing the magnetic-group identification and the input-to-standard Seitz correspondence, with antiunitary operations marked explicitly.";
+  "showSSGReciprocalMagneticGroup[ssg] takes a Xiao SSG label and displays a formatted table containing the magnetic-group identification and the input-to-standard Seitz correspondence. Each row names both the corresponding parent-SSG point operation and the standard reciprocal-MSG operation; antiunitary MSG names carry a prime.";
 getSSGNonsymmorphic::usage =
   "getSSGNonsymmorphic[ssg] takes a Xiao SSG label and returns True if its momentum-space fractional translations cannot be removed by one common origin shift, and False otherwise.";
 getSSGNonsymmorphicInfo::usage =
@@ -93,12 +93,34 @@ getSSGReciprocalMagneticSpaceGroup[ssg_String] := Module[{key, result},
 getSSGReciprocalMagneticSpaceGroup[ssg_] := Missing["InvalidSSGNumber", ssg];
 getSSGReciprocalFamilySpaceGroup[ssg_] := getSSGReciprocalSpaceGroup[ssg];
 
-showSSGReciprocalMagneticGroup[ssg_] := Module[{info, inputs, rows},
+showSSGReciprocalMagneticGroup[ssg_] := Module[
+  {info, inputs, rows, record, parent, family, lb, standardBasis,
+   parentPointMatrix, standardPointMatrix, namedOperation},
   info = getSSGReciprocalMagneticSpaceGroup[ssg];
   If[MissingQ[info], Return[info]];
+  record = lookupRecord[ssg];
+  If[MissingQ[record], Return[record]];
+  parent = Lookup[record, "ParentSpaceGroup"];
+  family = Lookup[info["FamilySpaceGroup"], "InternationalNumber"];
+  lb = exactDisplayValue[Lookup[record, "LB"]];
+  standardBasis = exactDisplayValue[Lookup[info, "StandardUnitaryPrimitiveBasis"]];
   inputs = info["InputOperations"];
-  rows = Map[Function[row, With[{input = inputs[[row["InputIndex"]]], standard = row["StandardOperation"]},
-    {row["InputIndex"], If[row["Antiunitary"], "Yes", "No"],
+  parentPointMatrix[input_] := Simplify[
+    lb . Transpose[Inverse[input["Grading"] exactDisplayValue[input["LinearPart"]]]] . Inverse[lb]
+  ];
+  standardPointMatrix[standard_] := Simplify[
+    standardBasis . exactDisplayValue[standard["LinearPart"]] . Inverse[standardBasis]
+  ];
+  namedOperation[spaceGroup_, matrix_, antiunitary_: False] := Module[{name},
+    name = rotationNameFromMatrix[spaceGroup, matrix];
+    If[MissingQ[name], "-", If[TrueQ[antiunitary], name <> "'", name]]
+  ];
+  rows = Map[Function[row, With[
+    {input = inputs[[row["InputIndex"]]], standard = row["StandardOperation"]},
+    {row["InputIndex"],
+     namedOperation[parent, parentPointMatrix[input]],
+     namedOperation[family, standardPointMatrix[standard], row["Antiunitary"]],
+     If[row["Antiunitary"], "Yes", "No"],
      MatrixForm[input["LinearPart"]], input["FractionalTranslation"],
      MatrixForm[standard["LinearPart"]], standard["FractionalTranslation"]}]],
     info["InputToStandardOperations"]];
@@ -107,7 +129,8 @@ showSSGReciprocalMagneticGroup[ssg_] := Module[{info, inputs, rows},
       "  |  Type ", {"I", "II", "III", "IV"}[[info["MagneticType"]]],
       "  |  Family ", info["FamilySpaceGroup"]["InternationalSymbol"]}],
     Row[{"C = ", MatrixForm[info["CoordinateMatrix"]], "   theta = ", info["OriginShift"]}],
-    Grid[Prepend[rows, {"#", "Antiunitary", "A (input)", "Q (input)", "A (standard)", "Q (standard)"}],
+    Grid[Prepend[rows, {"#", "Parent operation", "MSG operation", "Antiunitary",
+        "A (input)", "Q (input)", "A (standard)", "Q (standard)"}],
       Frame -> All, Alignment -> Center, Background -> {None, {LightGray, None}}]
   }, Spacings -> 1]
 ];

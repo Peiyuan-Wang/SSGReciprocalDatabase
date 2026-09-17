@@ -11,19 +11,19 @@ gh auth login -h github.com -p https -w
 认证由 GitHub CLI 和 macOS 钥匙串保存，不要把 token 写入脚本或仓库。以后在仓库目录先预检：
 
 ```bash
-./publish_release.sh 0.8.2
+./publish_release.sh 0.8.3
 ```
 
-确认输出后自动提交指定源码和验证文件、推送当前分支、建立 `v0.8.2` Release 并上传 paclet：
+确认输出后自动提交指定源码和验证文件、推送当前分支、建立 `v0.8.3` Release 并上传 paclet：
 
 ```bash
-./publish_release.sh 0.8.2 --publish
+./publish_release.sh 0.8.3 --publish
 ```
 
 也可以指定发布说明：
 
 ```bash
-./publish_release.sh 0.8.2 --publish --notes-file RELEASE_NOTES_0.8.2.md
+./publish_release.sh 0.8.3 --publish --notes-file RELEASE_NOTES_0.8.3.md
 ```
 
 脚本使用 `release-files.txt` 白名单，不会提交完整生成数据库、缓存或 `dist/` 目录；完整数据库只随 paclet 作为 Release asset 上传。脚本会拒绝版本不一致、asset 缺失和已有 staged changes，并能在网络中断后从已有发布提交继续。如果 GitHub 已留下草稿，脚本会比较安装包 SHA-256，补传缺失资源并发布原草稿，不会重复建立 Release。每次运行都会读取 macOS 系统代理：系统代理开启时使用当前代理，关闭时清除终端遗留的代理变量并直连。网络错误不是重新登录可以解决的。
@@ -104,7 +104,7 @@ GitHub CLI 会从当前默认分支创建 `v0.6.2` tag，并把 paclet 上传为
 
 ```wl
 Get[URLDownload[
-  "https://github.com/Peiyuan-Wang/SSGReciprocalDatabase/releases/download/v0.8.2/InstallSSGReciprocalDatabase.wl"
+  "https://github.com/Peiyuan-Wang/SSGReciprocalDatabase/releases/download/v0.8.3/InstallSSGReciprocalDatabase.wl"
 ]]
 ```
 
@@ -113,7 +113,7 @@ Get[URLDownload[
 ```wl
 repo = FileNameJoin[{$UserBaseDirectory, "Paclets", "Repository"}];
 If[!DirectoryQ[repo], CreateDirectory[repo, CreateIntermediateDirectories -> True]];
-PacletInstall["/absolute/path/SSGReciprocalDatabase-0.8.2.paclet"];
+PacletInstall["/absolute/path/SSGReciprocalDatabase-0.8.3.paclet"];
 << "SSGReciprocalDatabase`";
 showSSGReciprocalGenTab["N143.10.1"]
 ```

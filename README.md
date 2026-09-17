@@ -1,12 +1,16 @@
 # SSG reciprocal-group enumerator
 
+Version 0.8.3 names every operation in the reciprocal magnetic-group table in
+both the parent-SSG convention and the standard reciprocal-MSG convention.
+Antiunitary MSG operations carry a prime.
+
 Version 0.8.2 adds a bootstrap installer that initializes a missing Wolfram
 user paclet repository before calling `PacletInstall`. A new user can install
 the current release directly from Mathematica with:
 
 ```wl
 Get[URLDownload[
-  "https://github.com/Peiyuan-Wang/SSGReciprocalDatabase/releases/download/v0.8.2/InstallSSGReciprocalDatabase.wl"
+  "https://github.com/Peiyuan-Wang/SSGReciprocalDatabase/releases/download/v0.8.3/InstallSSGReciprocalDatabase.wl"
 ]]
 ```
 
