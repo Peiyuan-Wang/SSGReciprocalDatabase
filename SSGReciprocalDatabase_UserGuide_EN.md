@@ -114,7 +114,9 @@ For a first installation, including on a Wolfram setup whose user paclet
 repository has not yet been initialized, evaluate this single command:
 
 ```wl
-Get["https://raw.githubusercontent.com/Peiyuan-Wang/SSGReciprocalDatabase/main/InstallSSGReciprocalDatabase.wl"]
+Get[URLDownload[
+  "https://github.com/Peiyuan-Wang/SSGReciprocalDatabase/releases/download/v0.8.2/InstallSSGReciprocalDatabase.wl"
+]]
 ```
 
 The bootstrap installer creates the standard user paclet directories when

@@ -103,7 +103,9 @@ GitHub CLI 会从当前默认分支创建 `v0.6.2` tag，并把 paclet 上传为
 全新用户可在 Mathematica 中运行下面的一条命令；安装脚本会先建立缺失的用户 paclet 仓库，再下载、安装并加载当前版本：
 
 ```wl
-Get["https://raw.githubusercontent.com/Peiyuan-Wang/SSGReciprocalDatabase/main/InstallSSGReciprocalDatabase.wl"]
+Get[URLDownload[
+  "https://github.com/Peiyuan-Wang/SSGReciprocalDatabase/releases/download/v0.8.2/InstallSSGReciprocalDatabase.wl"
+]]
 ```
 
 已经下载 `.paclet` 时，使用下面的本地安装形式，以兼容尚未初始化 `Repository` 目录的 Wolfram 环境：

@@ -5,7 +5,9 @@ user paclet repository before calling `PacletInstall`. A new user can install
 the current release directly from Mathematica with:
 
 ```wl
-Get["https://raw.githubusercontent.com/Peiyuan-Wang/SSGReciprocalDatabase/main/InstallSSGReciprocalDatabase.wl"]
+Get[URLDownload[
+  "https://github.com/Peiyuan-Wang/SSGReciprocalDatabase/releases/download/v0.8.2/InstallSSGReciprocalDatabase.wl"
+]]
 ```
 
 Version 0.8.1 adds concise input/output documentation to every public Wolfram
