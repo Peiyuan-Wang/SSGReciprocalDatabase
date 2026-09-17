@@ -11,19 +11,19 @@ gh auth login -h github.com -p https -w
 认证由 GitHub CLI 和 macOS 钥匙串保存，不要把 token 写入脚本或仓库。以后在仓库目录先预检：
 
 ```bash
-./publish_release.sh 0.8.3
+./publish_release.sh 0.8.4
 ```
 
-确认输出后自动提交指定源码和验证文件、推送当前分支、建立 `v0.8.3` Release 并上传 paclet：
+确认输出后自动提交指定源码和验证文件、推送当前分支、建立 `v0.8.4` Release 并上传 paclet：
 
 ```bash
-./publish_release.sh 0.8.3 --publish
+./publish_release.sh 0.8.4 --publish
 ```
 
 也可以指定发布说明：
 
 ```bash
-./publish_release.sh 0.8.3 --publish --notes-file RELEASE_NOTES_0.8.3.md
+./publish_release.sh 0.8.4 --publish --notes-file RELEASE_NOTES_0.8.4.md
 ```
 
 脚本使用 `release-files.txt` 白名单，不会提交完整生成数据库、缓存或 `dist/` 目录；完整数据库只随 paclet 作为 Release asset 上传。脚本会拒绝版本不一致、asset 缺失和已有 staged changes，并能在网络中断后从已有发布提交继续。如果 GitHub 已留下草稿，脚本会比较安装包 SHA-256，补传缺失资源并发布原草稿，不会重复建立 Release。每次运行都会读取 macOS 系统代理：系统代理开启时使用当前代理，关闭时清除终端遗留的代理变量并直连。网络错误不是重新登录可以解决的。
@@ -33,14 +33,10 @@ gh auth login -h github.com -p https -w
 完整程序包位于：
 
 ```text
-dist/SSGReciprocalDatabase-0.6.2.paclet
+dist/SSGReciprocalDatabase-0.8.4.paclet
 ```
 
-它约为 15 MB，SHA-256 为：
-
-```text
-ff9c869a080cb6f7014e9b4d3ef538cb6b224d86e6822bf4265e7b8cf1a64595
-```
+发布前用 `shasum -a 256 dist/SSGReciprocalDatabase-0.8.4.paclet` 核对安装包摘要；正式摘要也会显示在 Release 说明中。
 
 建议先发布为 private repository。公开前应确认 ISO-IR 数据、Xiao 标签数据和
 `SpaceGroupIrep` 名称表快照的再发布许可与署名要求，再决定仓库许可证。
@@ -76,7 +72,7 @@ git add SSGReciprocalDatabase/Data/XiaoO3RepresentationValidation.json
 git add SSGReciprocalDatabase/Data/XiaoO3MultiplicationValidation.json
 git add SSGReciprocalDatabase/Data/SpaceGroupIrepRotationNames.json
 git add test_*.py test_*.wl validate_rotation_names.py
-git commit -m "Release SSGReciprocalDatabase 0.6.2"
+git commit -m "Release SSGReciprocalDatabase 0.8.4"
 ```
 
 ## 3. 新建远程仓库并推送
@@ -93,7 +89,7 @@ gh repo create YOUR_GITHUB_NAME/SSGReciprocalDatabase --private --source=. --rem
 ## 4. 发布完整程序包
 
 ```bash
-gh release create v0.6.2 dist/SSGReciprocalDatabase-0.6.2.paclet --title "SSGReciprocalDatabase 0.6.2" --notes "Complete Wolfram Language database for 67,475 Xiao SSG labels."
+gh release create v0.8.4 dist/SSGReciprocalDatabase-0.8.4.paclet --title "SSGReciprocalDatabase 0.8.4" --notes-file RELEASE_NOTES_0.8.4.md
 ```
 
 GitHub CLI 会从当前默认分支创建 `v0.6.2` tag，并把 paclet 上传为 Release asset。
@@ -104,7 +100,7 @@ GitHub CLI 会从当前默认分支创建 `v0.6.2` tag，并把 paclet 上传为
 
 ```wl
 Get[URLDownload[
-  "https://github.com/Peiyuan-Wang/SSGReciprocalDatabase/releases/download/v0.8.3/InstallSSGReciprocalDatabase.wl"
+  "https://github.com/Peiyuan-Wang/SSGReciprocalDatabase/releases/download/v0.8.4/InstallSSGReciprocalDatabase.wl"
 ]]
 ```
 
@@ -113,7 +109,7 @@ Get[URLDownload[
 ```wl
 repo = FileNameJoin[{$UserBaseDirectory, "Paclets", "Repository"}];
 If[!DirectoryQ[repo], CreateDirectory[repo, CreateIntermediateDirectories -> True]];
-PacletInstall["/absolute/path/SSGReciprocalDatabase-0.8.3.paclet"];
+PacletInstall["/absolute/path/SSGReciprocalDatabase-0.8.4.paclet"];
 << "SSGReciprocalDatabase`";
 showSSGReciprocalGenTab["N143.10.1"]
 ```
@@ -122,7 +118,7 @@ showSSGReciprocalGenTab["N143.10.1"]
 
 ```bash
 gh repo view --web
-gh release view v0.6.2
+gh release view v0.8.4
 ```
 
 在一个全新的 Mathematica Kernel 中再运行：
@@ -134,4 +130,4 @@ Length[SSGReciprocalDatabaseLabels[]]
 showSSGReciprocalGenTab["N143.10.1"]
 ```
 
-预期版本为 `{0,6,2}`，标签数为 `67475`。
+预期版本为 `{0,8,4}`，标签数为 `67475`。

@@ -1,4 +1,4 @@
-# SSGReciprocalDatabase 0.8.3 User Guide
+# SSGReciprocalDatabase 0.8.4 User Guide
 
 ## Function help
 
@@ -32,15 +32,24 @@ getSSGReciprocalFamilySpaceGroup["N143.10.1"]
 
 The first function returns BNS, UNI and OG numbers, magnetic type I-IV, the
 family space group, and an exact grading-preserving coordinate certificate.
-The second displays input and standard Seitz operations side by side with
-their antiunitary flags. Its `Parent operation` column names the spatial point
-operation recovered in the SSG parent-group basis. Its `MSG operation` column
-names the reciprocal operation after the exact transformation to the standard
-magnetic-group coordinates; a trailing prime marks an antiunitary operation.
-The adjacent `Q` columns retain the translation part, so screw, glide, and
-antiunitary-translation information is not discarded. The third function
-forgets the flags and returns the ordinary family group; it aliases the older
-`getSSGReciprocalSpaceGroup` function.
+The second displays one generating set for the full reciprocal magnetic space
+group. Its first three rows are reciprocal-lattice translations `K1`, `K2`,
+and `K3`, mapped to the standard MSG translations `t1`, `t2`, and `t3`.
+The remaining rows are all stored SSG quotient generators. `SSG generator`
+and `MSG generator` name the source and standard operations; a trailing prime
+marks an antiunitary MSG generator. `Momentum space symmetry of SSG` and
+`Real space symmetry of MSG` each contain one complete Seitz pair, so their
+linear and translation parts are never separated or discarded. The third
+function forgets the flags and returns the ordinary family group; it aliases
+the older `getSSGReciprocalSpaceGroup` function.
+
+If the exact coordinate certificate is
+`k_standard = C k_source + theta`, the source translation in row `Ki` is
+`{I | C^-1 e_i}` and its standard image is `{I | e_i}`. For a quotient
+generator `{A | Q}`, the displayed standard operation is
+`{C A C^-1 | C Q + (I-C A C^-1) theta}` modulo integer translations. Thus the
+table is a generator-level space-group correspondence, not only a comparison
+of point matrices.
 
 The input is `(A,Q,s)`, where `A = s Inverse[Transpose[M]]`. The antiunitary
 sign is already included in `A`: a primed database operation uses this same
@@ -121,7 +130,7 @@ repository has not yet been initialized, evaluate this single command:
 
 ```wl
 Get[URLDownload[
-  "https://github.com/Peiyuan-Wang/SSGReciprocalDatabase/releases/download/v0.8.3/InstallSSGReciprocalDatabase.wl"
+  "https://github.com/Peiyuan-Wang/SSGReciprocalDatabase/releases/download/v0.8.4/InstallSSGReciprocalDatabase.wl"
 ]]
 ```
 
@@ -136,7 +145,7 @@ repo = FileNameJoin[{$UserBaseDirectory, "Paclets", "Repository"}];
 If[!DirectoryQ[repo],
   CreateDirectory[repo, CreateIntermediateDirectories -> True]
 ];
-PacletInstall["/absolute/path/SSGReciprocalDatabase-0.8.3.paclet"]
+PacletInstall["/absolute/path/SSGReciprocalDatabase-0.8.4.paclet"]
 ```
 
 Place the directory `SSGReciprocalDatabase` in one of the Wolfram application
