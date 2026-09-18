@@ -1,6 +1,6 @@
-(* Bootstrap installer for SSGReciprocalDatabase 0.8.4. *)
+(* Bootstrap installer for SSGReciprocalDatabase 0.8.5. *)
 Module[
-  {version = "0.8.4", pacletBase, requiredDirectories, localAsset,
+  {version = "0.8.5", pacletBase, requiredDirectories, localAsset,
    releaseURL, source, installed},
 
   Needs["PacletManager`"];

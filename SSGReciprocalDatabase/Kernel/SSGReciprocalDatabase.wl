@@ -10,7 +10,7 @@ ClearAll @@ Names["SSGReciprocalDatabase`Private`*"];
 
 SSGReciprocalDatabaseVersion::usage =
   "SSGReciprocalDatabaseVersion returns the installed version as the integer list {major, minor, patch}.";
-SSGReciprocalDatabaseVersion = {0, 8, 4};
+SSGReciprocalDatabaseVersion = {0, 8, 5};
 
 getSSGReciprocalData::usage =
   "getSSGReciprocalData[ssg] takes a Xiao SSG label such as \"N143.10.1\" and returns an Association containing all stored reciprocal-space data and group identifications.";
@@ -155,7 +155,7 @@ showSSGReciprocalMagneticGroup[ssg_] := Module[
     Row[{"L_B = ", MatrixForm[lb],
       "   K_i: source reciprocal translations mapped to standard MSG translations t_i"}],
     Grid[Prepend[rows, {"#", "SSG generator", "MSG generator", "Antiunitary",
-        "Momentum space symmetry of SSG", "Real space symmetry of MSG"}],
+        "Momentum space symmetry of SSG", "Corresponding standard MSG Seitz operation"}],
       Frame -> All, Alignment -> Center, Background -> {None, {LightGray, None}}]
   }, Spacings -> 1]
 ];

@@ -1,11 +1,13 @@
 # SSG reciprocal-group enumerator
 
-Version 0.8.4 displays generators of the full reciprocal magnetic space group,
+Version 0.8.5 displays generators of the full reciprocal magnetic space group,
 not merely the point-group projection or every element of its finite quotient.
 The table starts with the three reciprocal-lattice translations and then lists
 all stored SSG quotient generators. Its `Momentum space symmetry of SSG` and
-`Real space symmetry of MSG` columns give complete Seitz pairs in the source
-and standard coordinates. Antiunitary MSG generator names carry a prime.
+`Corresponding standard MSG Seitz operation` columns give complete Seitz pairs
+in the source and standard coordinates. The latter is an abstract affine-group
+correspondence, not the conventional action of a real-space MSG on Bloch
+momentum. Antiunitary MSG generator names carry a prime.
 
 Version 0.8.2 adds a bootstrap installer that initializes a missing Wolfram
 user paclet repository before calling `PacletInstall`. A new user can install
@@ -13,7 +15,7 @@ the current release directly from Mathematica with:
 
 ```wl
 Get[URLDownload[
-  "https://github.com/Peiyuan-Wang/SSGReciprocalDatabase/releases/download/v0.8.4/InstallSSGReciprocalDatabase.wl"
+  "https://github.com/Peiyuan-Wang/SSGReciprocalDatabase/releases/download/v0.8.5/InstallSSGReciprocalDatabase.wl"
 ]]
 ```
 

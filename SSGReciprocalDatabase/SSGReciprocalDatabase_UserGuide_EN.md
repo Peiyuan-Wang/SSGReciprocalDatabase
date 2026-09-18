@@ -1,4 +1,4 @@
-# SSGReciprocalDatabase 0.8.4 User Guide
+# SSGReciprocalDatabase 0.8.5 User Guide
 
 ## Function help
 
@@ -38,10 +38,13 @@ and `K3`, mapped to the standard MSG translations `t1`, `t2`, and `t3`.
 The remaining rows are all stored SSG quotient generators. `SSG generator`
 and `MSG generator` name the source and standard operations; a trailing prime
 marks an antiunitary MSG generator. `Momentum space symmetry of SSG` and
-`Real space symmetry of MSG` each contain one complete Seitz pair, so their
-linear and translation parts are never separated or discarded. The third
-function forgets the flags and returns the ordinary family group; it aliases
-the older `getSSGReciprocalSpaceGroup` function.
+`Corresponding standard MSG Seitz operation` each contain one complete Seitz
+pair, so their linear and translation parts are never separated or discarded.
+The standard MSG column records an abstract affine-group correspondence on
+three-dimensional Euclidean space; it is not the conventional reciprocal-space
+action of a real-space MSG on Bloch momentum. The third function forgets the
+flags and returns the ordinary family group; it aliases the older
+`getSSGReciprocalSpaceGroup` function.
 
 If the exact coordinate certificate is
 `k_standard = C k_source + theta`, the source translation in row `Ki` is
@@ -130,7 +133,7 @@ repository has not yet been initialized, evaluate this single command:
 
 ```wl
 Get[URLDownload[
-  "https://github.com/Peiyuan-Wang/SSGReciprocalDatabase/releases/download/v0.8.4/InstallSSGReciprocalDatabase.wl"
+  "https://github.com/Peiyuan-Wang/SSGReciprocalDatabase/releases/download/v0.8.5/InstallSSGReciprocalDatabase.wl"
 ]]
 ```
 
@@ -145,7 +148,7 @@ repo = FileNameJoin[{$UserBaseDirectory, "Paclets", "Repository"}];
 If[!DirectoryQ[repo],
   CreateDirectory[repo, CreateIntermediateDirectories -> True]
 ];
-PacletInstall["/absolute/path/SSGReciprocalDatabase-0.8.4.paclet"]
+PacletInstall["/absolute/path/SSGReciprocalDatabase-0.8.5.paclet"]
 ```
 
 Place the directory `SSGReciprocalDatabase` in one of the Wolfram application

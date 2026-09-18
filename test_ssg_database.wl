@@ -1,7 +1,7 @@
 Get[FileNameJoin[{DirectoryName[$InputFileName], "SSGReciprocalDatabase", "Kernel", "SSGReciprocalDatabase.wl"}]];
 
 status = SSGReciprocalDatabaseStatus[];
-If[SSGReciprocalDatabaseVersion =!= {0, 8, 4}, Exit[1]];
+If[SSGReciprocalDatabaseVersion =!= {0, 8, 5}, Exit[1]];
 If[Lookup[status, "RecordCount"] =!= 67475, Exit[1]];
 If[Lookup[status, "CompleteCount"] =!= 67475, Exit[2]];
 If[Lookup[status, "ComputedParentSpaceGroups"] =!= 230, Exit[3]];

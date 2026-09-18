@@ -1,5 +1,5 @@
 Get[FileNameJoin[{DirectoryName[$InputFileName], "SSGReciprocalDatabase", "Kernel", "SSGReciprocalDatabase.wl"}]];
-If[SSGReciprocalDatabaseVersion =!= {0, 8, 4}, Exit[1]];
+If[SSGReciprocalDatabaseVersion =!= {0, 8, 5}, Exit[1]];
 Do[
   result = getSSGReciprocalSpaceGroup[label];
   If[!AssociationQ[result] || result["Status"] =!= "EXACT_MATCH", Exit[2]];
